@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="p_product-list_container">
-        <div v-if="proList&&proList.length>0" class="card_li">
+        <div v-if="proList&&proList.length>0">
           <div class="list_card" v-for="(item,index) in proList" :key="index" @click="handleProductInfo(item.Id)">
             <el-image
               :src="item.Cover"
@@ -25,12 +25,6 @@
                 <span class="l_c_r_title">{{item.Name}}</span>
               </div>
               <div class="l_c_r_score">
-                <rate
-                  class="c_t_rate"
-                  :value="item.Rank"
-                  :isDisabled="true"
-                >
-                </rate>
                 <span class="score_num">{{item.CommentCount}} reviews</span>
                 <el-tag type="primary" size="small" v-if="item.Price">${{item.Price}} one time fee</el-tag>
                 <el-tag type="success" size="small" v-if="item.Discount">{{item.Discount}}</el-tag>
@@ -162,7 +156,6 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-@import '../../assets/style/style.less';
   .product-list{
     height: 100%;
     .p_product-list{
@@ -170,7 +163,7 @@ export default {
       height: calc(100% - 72px);
       overflow: auto;
       .p_product-list_top{
-        background: @top-bg;
+        background: #ffffff;
         box-shadow: 0 2px 2px 0 rgba(0, 0, 50, 0.04);
         .p_l_t_container{
           max-width: 1056px;
@@ -200,17 +193,11 @@ export default {
       }
       .p_product-list_container{
         min-height: calc(100% - 310px);
+        max-width: 1056px;
         margin: 0 auto;
-        padding: 15px 25px 25px;
-        .card_li{
-          display: flex;
-          flex-direction: row;
-          flex-wrap: wrap;
-          justify-content: space-between;
-        }
+        padding: 15px 0 25px 0;
         .list_card{
-          width: 45%;
-          background: @car-bg;
+          background: #ffffff;
           box-shadow: 0 12px 20px 0 rgba(0, 0, 50, 0.12);
           margin-bottom: 12px;
           padding: 24px 10px 24px 40px;
@@ -301,7 +288,6 @@ export default {
           max-width: 97%;
           padding: 0.5rem 0;
           .list_card{
-            width: 100%;
             box-shadow: 0 2px 3px 0 rgba(0, 0, 50, 0.12);
             margin-bottom: 0.5rem;
             padding: 0.6rem 0.3rem 0.4rem 0.5rem;

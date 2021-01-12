@@ -184,66 +184,89 @@
               <div class="write_one"></div>
               <div class="write_two"></div>
               <div class="write_three">
-                <div class="t_title">Write a review...</div>
+                <div class="t_title" @click="handleWriteReview">Write a review...</div>
               </div>
             </div>
             <div class="left_main_review">
-              <div class="left_main_review_title">
-                {{processDetails.Name}} Reviews ({{processDetails.CommentCount?processDetails.CommentCount:0}})
-              </div>
-              <div class="Good_bad">
-                <div class="g_b_tag">
-                  <span>Bad</span>
-                  <span>20%</span>
+              <div class="review_tag">
+                <div class="left_main_review_title">
+                  {{processDetails.Name}} Reviews ({{processDetails.CommentCount?processDetails.CommentCount:0}})
                 </div>
-                <div class="g_b_tag">
-                  <span>Poor</span>
-                  <span>20%</span>
-                </div>
-                <div class="g_b_tag">
-                  <span>Average</span>
-                  <span>20%</span>
-                </div>
-                <div class="g_b_tag">
-                  <span>Great</span>
-                  <span>20%</span>
-                </div>
-                <div class="g_b_tag">
-                  <span>Excellent</span>
-                  <span>20%</span>
-                </div>
-              </div>
-            </div>
-            <div v-if="productComment && productComment.length>0">
-              <div class="left_main_review_card" v-for="(item,index) in productComment" :key="index">
-                <div class="card_user">
-                  <el-avatar size="large" :src="item.Icon"></el-avatar>
-                  <span class="user_name">{{item.Name}}</span>
-                  <rate :value="item.Rank" :isDisabled="true"></rate>
-                </div>
-                <p class="card_text" v-html="item.Content"></p>
-                <div class="score_date">
-                  <div class="card_bottom">
-                    <el-tooltip class="item" effect="dark" content="Useful" placement="top-start">
-                      <svg-icon value="icon-xihuan1" :size="1.3" :style="likeReviewList.indexOf(`${processDetails.Id}-${item.ComentId}`)==-1?'color:#aaa':'color:#f56c6c'" @click="handleUseFul(item,index)" v-preventReClick></svg-icon>
-                    </el-tooltip>
-                    <span>({{item.Likes}})</span>
+                <div class="Good_bad">
+                  <div class="g_b_tag" :style="selgoodBadTagList.indexOf('Bad')!=-1?'background:#EE2F18':''"  @click="handleSelgoodBadTagList('Bad')">
+                    <span>Bad</span>
+                    <span>20%</span>
                   </div>
-                  <span class="date">{{item.Time?dateEnglish(item.Time):'--:--'}}</span>
+                  <div class="g_b_tag" :style="selgoodBadTagList.indexOf('Poor')!=-1?'background:#F5AE1A':''"  @click="handleSelgoodBadTagList('Poor')">
+                    <span>Poor</span>
+                    <span>20%</span>
+                  </div>
+                  <div class="g_b_tag" :style="selgoodBadTagList.indexOf('Average')!=-1?'background:#FCD628':''" @click="handleSelgoodBadTagList('Average')">
+                    <span>Average</span>
+                    <span>20%</span>
+                  </div>
+                  <div class="g_b_tag" :style="selgoodBadTagList.indexOf('Great')!=-1?'background:#A4CD32':''" @click="handleSelgoodBadTagList('Great')">
+                    <span>Great</span>
+                    <span>20%</span>
+                  </div>
+                  <div class="g_b_tag" :style="selgoodBadTagList.indexOf('Excellent')!=-1?'background:#00C48A':''" @click="handleSelgoodBadTagList('Excellent')">
+                    <span>Excellent</span>
+                    <span>20%</span>
+                  </div>
+                </div>
+                <el-tabs class="tag_tab" v-model="tabsActiveName" @tab-click="handleTabsClick">
+                  <el-tab-pane label="Complaint" name="1"></el-tab-pane>
+                </el-tabs>
+              </div>
+              <div v-if="productComment && productComment.length>0">
+                <div class="left_main_review_card" v-for="(item,index) in productComment" :key="index">
+                  <div class="user">
+                    <div class="card_user">
+                      <el-avatar size="large" :src="item.Icon"></el-avatar>
+                      <span class="user_name">{{item.Name}}</span>
+                    </div>
+                    <span class="date">{{item.Time?dateEnglish(item.Time):'--:--'}}</span>
+                  </div>
+                  <p class="card_text" v-html="item.Content"></p>
+                  <div class="review_tag_list">
+                    <el-tag size="small">标签二</el-tag>
+                    <el-tag size="small">标签二</el-tag>
+                    <el-tag size="small">标签二</el-tag>
+                  </div>
+                  <div class="score_date">
+                    <div class="card_bottom">
+                      <el-tooltip class="item" effect="dark" content="Useful" placement="top-start">
+                        <svg-icon value="icon-xihuan1" :size="1.3" :style="likeReviewList.indexOf(`${processDetails.Id}-${item.ComentId}`)==-1?'color:#aaa':'color:#f56c6c'" @click="handleUseFul(item,index)" v-preventReClick></svg-icon>
+                      </el-tooltip>
+                      <span>({{item.Likes}})</span>
+                    </div>
+                  </div>
+                  <div class="reply">
+                    <svg-icon value="icon-icon_reply"></svg-icon>
+                    <div class="reply_right">
+                      <div class="reply_right_user">
+                        <span>Reply from Paw Print Genetics</span>
+                        <span class="date">{{item.Time?dateEnglish(item.Time):'--:--'}}</span>
+                      </div>
+                      <div class="reply_right_text">
+                        Thank you for your review, Diane. We are so happy to hear you have had a great experience . Thank you for choosing PPG!
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="left_page" v-if="commentPage.pageNum>1">
+                  <el-pagination
+                    layout="prev, pager, next"
+                    :page-count="commentPage.pageNum"
+                    :current-page="commentPage.pageIndex"
+                    :page-size="commentPage.pageSize"
+                    @current-change="getQueryProductCommentData($event)"
+                  >
+                  </el-pagination>
                 </div>
               </div>
-              <div class="left_page" v-if="commentPage.pageNum>1">
-                <el-pagination
-                  layout="prev, pager, next"
-                  :page-count="commentPage.pageNum"
-                  :current-page="commentPage.pageIndex"
-                  :page-size="commentPage.pageSize"
-                  @current-change="getQueryProductCommentData($event)"
-                >
-                </el-pagination>
-              </div>
+              <empty v-else :tips="'No Reviews'" :paddingData="3"></empty>
             </div>
-            <empty v-else :tips="'No Reviews'" :paddingData="3"></empty>
           </el-col>
         </el-row>
       </div>
@@ -261,7 +284,6 @@ export default {
       loading:false, //加载
       isEllipsis:true, //产品介绍是否是省略状态
       rateValue:null,
-      iconClasses: ['iconfont icon-pingfendengjiRating4', 'iconfont icon-pingfendengjiRating4', 'iconfont icon-pingfendengjiRating4'],
       comparisonList:[], //产品比较列表
       processDetails:null, //产品详情
       likeProList:[], //喜欢产品列表
@@ -275,7 +297,9 @@ export default {
         pageNum: 0,
       },
       isMoreRow:false, //产品介绍是否需要显示更多
-      isClick:false //是否点击
+      isClick:false, //是否点击
+      selgoodBadTagList:[], //选择的好坏标签
+      tabsActiveName:'1'
     }
   },
   created(){
@@ -287,15 +311,31 @@ export default {
     this.getLikeReviewList();
     this.getInit();
     this.getVoteList();
-    setTimeout(()=>{
-      const row=this.$refs.description.offsetHeight/24
-      if(row>2){
-        this.isMoreRow=true;
-      }
-    },500)
+    // setTimeout(()=>{
+    //   const row=this.$refs.description.offsetHeight/24
+    //   if(row>2){
+    //     this.isMoreRow=true;
+    //   }
+    // },500)
   },
   methods:{
     dateEnglish,
+    /**
+     * 评论标签页选择
+     */
+    handleTabsClick(tab,event){
+      console.log(tab,event);
+    },
+    /**
+     * 选择好坏标签
+     */
+    handleSelgoodBadTagList(tag){
+      if(this.selgoodBadTagList.indexOf(tag)!=-1){
+        this.selgoodBadTagList=this.selgoodBadTagList.filter((m)=> m!=tag)
+      }else{
+        this.selgoodBadTagList.push(tag);
+      }
+    },
     /**
      * 相关产品
      */
@@ -747,11 +787,14 @@ export default {
       }
       .left_main_review{
         padding: 0;
-        margin-top: 19px;
-        background: #ffffff;
-        border-radius: 10px;
-        border: 1px solid #e4ebf3;
-        padding: 26px 35px;
+        margin-top: 10px;
+        .review_tag{
+          background: #ffffff;
+          padding: 26px 35px 0;
+          border-radius: 10px 10px 0 0;
+          border: 1px solid #e4ebf3;
+          border-bottom: none;
+        }
         .left_main_review_title{
           color: #090161;
           font-size: 22px;
@@ -763,7 +806,7 @@ export default {
           border: 1px solid #e4ebf3;
           border-radius: 8px;
           height: 44px;
-          margin-top: 21px;
+          margin-top: 23px;
           .g_b_tag{
             display: flex;
             flex-direction: row;
@@ -787,32 +830,40 @@ export default {
             }
           }
         }
+        .tag_tab{
+          margin-top: 10px;
+          /deep/.el-tabs__item.is-active{
+            color:#02C48D;
+          }
+          /deep/.el-tabs__active-bar{
+            background-color: #02C48D;
+          }
+          /deep/.el-tabs__item{
+            &:hover{
+              color:#02C48D;
+            }
+          }
+        }
       }
       .left_main_review_card{
         background: #ffffff;
-        padding: 22px 24px;
-        margin-bottom: 8px;
-        .card_user{
+        padding: 22px 32px;
+        margin-bottom: 3px;
+        border: 1px solid #e4ebf3;
+        border-radius: 10px;
+        .user{
           display: flex;
-          align-items: center;
-          padding-bottom: 16px;
-          .user_name{
-            margin: 0 10px 0 8px;
-            font-size: 0.875rem;
-            color: #454554;
-          }
-        }
-        .score_date{
-          display: flex;
-          flex-direction: row;
           justify-content: space-between;
           align-items: center;
-          padding-top: 13px;
-          /deep/.el-rate__icon{
-            font-size: 1.2rem;
-          }
-          /deep/.icon-pingfendengjiRating4{
-            font-size: 1.2rem;
+          padding-bottom: 16px;
+          .card_user{
+            display: flex;
+            align-items: center;
+            .user_name{
+              margin: 0 10px 0 8px;
+              font-size: 0.875rem;
+              color: #454554;
+            }
           }
           .date{
             color: #73738f;
@@ -820,18 +871,65 @@ export default {
             user-select: none;
           }
         }
+        .review_tag_list{
+          padding-bottom: 5px;
+          .el-tag{
+            margin-right: 8px;
+          }
+        }
+        .score_date{
+          border-top: 1px solid #e8e8eb;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 8px;
+        }
+        .reply{
+          margin-top: 18px;
+          padding:16px;
+          background-color: #f2f2f5;
+          border-radius: 2px;
+          border-left: 5px solid #02C48D;
+          display: flex;
+          flex-direction: row;
+          .reply_right{
+            margin-left: 8px;
+            flex: 1;
+            .reply_right_user{
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              span:first-child{
+                font-weight: bolder;
+                font-size: 14px;
+                color: #454554;
+              }
+              span:last-child{
+                font-size: 14px;
+                color:#73738f;
+              }
+            }
+            .reply_right_text{
+              margin-top: 12px;
+              color: #515174;
+              font-size: 14px;
+              word-break: break-all;
+            }
+          }
+        }
         .card_text{
           margin: 0;
-          padding-bottom: 16px;
-          border-bottom: 1px solid #e8e8eb;
+          padding-bottom: 15px;       
           line-height: 1.5rem;
           color: #32323d;
+          font-size: 15px;
           // user-select: none;
         }
         .card_bottom{
           display: flex;
           align-items: center;
-          padding-top: 10px;
+          padding-top: 8px;
           svg{
             cursor: pointer;
           }
@@ -842,9 +940,14 @@ export default {
           }
         }
       }
+      .left_main_review_card:first-child{
+        border-top: none;
+         border-radius:0 0 10px 10px;
+      }
       .left_page{
         background: #ffffff;
         padding: 5px 0;
+        border: 1px solid #e4ebf3;
       }
       .left_main-img{
         background: #ffffff;
@@ -1206,6 +1309,27 @@ export default {
     .p_product-info{
       .p_p-info_main{
         padding: 0.6rem 0.3rem;
+        .pro_main_info{
+          .p_m_i_bottom{
+            .p_m_i_b_tablt{
+              .table_score{
+                .table_score_item{
+                  p:nth-child(1){
+                    color: #0b143e;
+                    font-size: 14px;
+                  }
+                  p:nth-child(2){
+                    color: #7d8288;
+                    font-size: 12px;
+                  }
+                }
+                .table_score_item:last-child{
+                  border: none;
+                }
+              }
+            }
+          }
+        }
         .left_main_introduce{
           padding: 1.5rem 1.6rem;
           margin-bottom: 0.75rem;
@@ -1216,50 +1340,76 @@ export default {
           }
         }
         .left_main_top{
-          height: 120px;
+          height: 100px;
           margin-bottom: 3px;
+          margin-top: 10px;
           .write_one{
             left: 0;
             width: 270px;
-            height: 100%;
-            position: absolute;
             clip-path: circle(76% at 35% 72%);
-            background-color: #fff;
             -webkit-clip-path: circle(92% at -16% 130%);
           }
           .write_two{
-            width: 167px;
+            width: 115px;
             height: 80px;
             margin-left: 12px;
             margin-right: 20px;
           }
         }
         .left_main_review{
+          .review_tag{
+            padding: 26px 18px 0;
+          }
+          .left_main_review_title{
+            font-size: 18px;
+          }
+          .Good_bad{
+            .g_b_tag{
+              padding: 11px 7px;
+              border-right: 1px solid #e4ebf3;
+              width: 20%;
+              display: flex;
+              flex-direction: column;
+              span:nth-child(1){
+                color: #6d728b;
+                font-size: 13px;
+              }
+              span:nth-child(2){
+                color: #050364;
+                font-size: 13px;
+                margin-left: 5px;
+                margin-top: 5px;
+              }
+            }
+          }
         }
         .left_main_review_card{
-          padding: 1.3rem 1.5rem;
-          margin-bottom: 0.5rem;
-          .card_user{
-            padding-bottom: 1rem;
+          padding: 18px;
+          .user{
+            padding-bottom: 12px;
           }
-          .score_date{
-            padding: 0.875rem 0;
-            /deep/.el-rate__icon{
-              font-size: 1.2rem;
-            }
-            /deep/.icon-pingfendengjiRating4{
-              font-size: 1.2rem;
-            }
-            .date{
-              font-size: 0.875rem;
+          .reply{
+            padding:10px;
+            .reply_right{
+              margin-left: 6px;
+              .reply_right_user{
+                span:first-child{
+                  font-size: 13px;
+                }
+                span:last-child{
+                  font-size: 12px;
+                  color:#73738f;
+                }
+              }
+              .reply_right_text{
+                margin-top: 10px;
+              }
             }
           }
-          .card_text{
-            padding-bottom: 1rem;
-            font-size: 0.875rem;
-          }
-          .card_bottom{
-            padding-top: 0.6rem;
+          .card_text{      
+            line-height: 1.4rem;
+            font-size: 14px;
+            // user-select: none;
           }
         }
         .left_page{

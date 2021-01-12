@@ -20,15 +20,17 @@
       </div>
       <div class="write-review_main">
         <el-form :model="reviewForm" :rules="rules" ref="ruleForm" label-width="100px">
-          <h2>Give your comments</h2>
-          <el-rate
-            class="r_rate"
-            v-model="reviewForm.Rank"
-            :icon-classes="iconClasses"
-            void-icon-class="iconfont icon-pingfendengjiRating4"
-            allow-half
-            :colors="['#FF3722', '#FF8622','#FFCE00']">
-          </el-rate>
+          <h2>Bad Comment Label</h2>
+          <el-form-item prop="label" class="label_item">
+            <el-select v-model="reviewForm.label" multiple placeholder="Please select a label">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <h2>Tell us about your experience</h2>
           <el-form-item prop="Content">
             <el-input
@@ -49,7 +51,7 @@
                 :on-progress="handleAvatarProgress"
                 :show-file-list="false"
                 >
-                <el-avatar v-loading="uploadLoading" element-loading-spinner="el-icon-loading" v-if="reviewForm.Icon" size="large" :src="url+reviewForm.Icon" fit="cover"></el-avatar>
+                <el-avatar v-loading="uploadLoading" element-loading-spinner="el-icon-loading" v-if="reviewForm.Icon" size="large" :src="`${url}${reviewForm.Icon}`" fit="cover"></el-avatar>
                 <svg-icon v-else value="icon--" :size="2.5"></svg-icon>
               </el-upload>
             </el-form-item>
@@ -95,10 +97,26 @@ export default {
         Content:null, //评论内容
         Email:null, //邮箱
         Name:null, //用户名称
-        Icon:'/Images/avt/b07fab35-4ccd-461c-ac7d-c9ca6370049b.png', //用户头像
-        Rank:null, //评分
+        Icon:'/Images/avt/2e33b26c-e748-4c66-b6c8-967a0c37292b.png', //用户头像
+        label:[], //标签
         Code:null //验证码
       },
+      options: [{
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
       codeValidate:null, //当前验证码
       processDetails:null, //产品详情
       rules: {
@@ -285,6 +303,9 @@ export default {
       .input_experience{
         margin: 16px 0;
       }
+      /deep/.el-form-item{
+        margin-bottom: 20px;
+      }
       /deep/.el-form-item__content{
         margin-left: 0 !important;
         width: 100%;
@@ -304,6 +325,12 @@ export default {
         }
         /deep/.el-input-group__append{
           padding: 0;
+        }
+      }
+      .label_item{
+        margin-top: 10px;
+        .el-select{
+          width: 100%;
         }
       }
     }

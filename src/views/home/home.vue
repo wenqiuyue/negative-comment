@@ -329,7 +329,7 @@ export default {
       text-align: center;
       font-size: 36px;
       font-weight: 500;
-      padding:45px 0 48px 0;
+      padding:65px 0 60px 0;
     }
     .r_r_reviews{
       padding: 0 12px;
@@ -404,7 +404,7 @@ export default {
       text-align: center;
       font-size: 36px;
       font-weight: 500;
-      padding:45px 0 48px 0;
+      padding:70px 0 60px 0;
     }
     .t_b_list{
       display: flex;

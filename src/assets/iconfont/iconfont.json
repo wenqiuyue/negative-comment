@@ -564,6 +564,13 @@
       "font_class": "tx-fill-changfangxing",
       "unicode": "e653",
       "unicode_decimal": 58963
+    },
+    {
+      "icon_id": "70881501",
+      "name": "回复",
+      "font_class": "icon_reply",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
     }
   ]
 }
