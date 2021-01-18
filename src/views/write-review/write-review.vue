@@ -45,13 +45,13 @@
             <el-form-item class="form_item" label="Upload Avatar:">
               <el-upload
                 class="upload-demo"
-                action="http://120.25.67.116:5251/api/HotType/CompareDatat"
+                :action="url+'/api/HotType/CompareDatat'"
                 :on-success="handleAvatarSuccess"
                 :on-error="handleAvatarError"
                 :on-progress="handleAvatarProgress"
                 :show-file-list="false"
                 >
-                <el-avatar v-loading="uploadLoading" element-loading-spinner="el-icon-loading" v-if="reviewForm.Icon" size="large" :src="`${url}${reviewForm.Icon}`" fit="cover"></el-avatar>
+                <el-avatar v-loading="uploadLoading" element-loading-spinner="el-icon-loading" v-if="reviewForm.Img" size="large" :src="`${url}${reviewForm.Img}`" fit="cover"></el-avatar>
                 <svg-icon v-else value="icon--" :size="2.5"></svg-icon>
               </el-upload>
             </el-form-item>
@@ -93,30 +93,16 @@ export default {
       uploadLoading:false, //头像上传加载
       iconClasses: ['iconfont icon-pingfendengjiRating4', 'iconfont icon-pingfendengjiRating4', 'iconfont icon-pingfendengjiRating4'],
       reviewForm:{
-        ProId:null, //产品id
+        PId:null, //产品id
         Content:null, //评论内容
         Email:null, //邮箱
         Name:null, //用户名称
-        Icon:'/Images/avt/2e33b26c-e748-4c66-b6c8-967a0c37292b.png', //用户头像
+        Img:'/Images/avt/24d6f473-51d9-4f66-aa7c-2d00f8d7ba63.png', //用户头像
         label:[], //标签
-        Code:null //验证码
+        Code:null, //验证码
+        IP:'111'
       },
-      options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
+      options: [], //标签
       codeValidate:null, //当前验证码
       processDetails:null, //产品详情
       rules: {
@@ -152,13 +138,19 @@ export default {
   },
   methods:{
      /**
-     * 产品详情
+     * 产品信息及标签
      */
     getProcessDetailsData(){
       this.loading=true;
-      this.$apiHttp.getProcessDetails({params:{Id:this.$route.query.proid}}).then((resp)=>{
-        if(resp.res==200){
-          this.processDetails=resp.data
+      Promise.all([
+        this.$apiHttp.negativeProductDetail({params:{pid:this.$route.query.proid}}),
+        this.$apiHttp.negativeNLabe({params:{pid:this.$route.query.proid}})
+      ]).then((resp)=>{
+        if(resp[0].res==200){
+          this.processDetails=resp[0].data;
+        }
+        if(resp[1].res==200){
+          this.options=resp[1].data;
         }
         this.loading=false;
       })
@@ -169,11 +161,11 @@ export default {
     handleSubmit(){
       this.$refs.ruleForm.validate((valid)=>{
         if(valid){
-          this.reviewForm.ProId=this.$route.query.proid;
+          this.reviewForm.PId=this.$route.query.proid;
           this.loading=true;
-          this.$apiHttp.addCommentInfo(this.reviewForm).then((resp)=>{
+          this.$apiHttp.negativeAddNegativeComment(this.reviewForm).then((resp)=>{
             this.loading=false;
-            if(resp.res==200 && (resp.data==1 || resp.data==2)){
+            if(resp.res==200){
               this.$message({
                 message: 'Comment successful',
                 type: 'success'
@@ -185,12 +177,13 @@ export default {
               }).then(() => {
                 this.$router.back()
               }).catch(()=>{});
-            }else{
-              this.$message({
-                message: 'Comment failed',
-                type: 'error'
-              });
             }
+            // else{
+            //   this.$message({
+            //     message: 'Comment failed',
+            //     type: 'error'
+            //   });
+            // }
           })
         }else{
           return;
@@ -213,7 +206,7 @@ export default {
      * 头像上传成功
      */
     handleAvatarSuccess(res, file){
-      this.reviewForm.Icon =res.msg;
+      this.reviewForm.Img =res.msg;
       this.uploadLoading=false;
     },
     /**

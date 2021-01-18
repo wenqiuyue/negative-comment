@@ -2,16 +2,22 @@ import { fetchGet,fetchPost } from '../utils/request.js'
 
 
 /**
- * 首页热门评论
+ * 首页热门差评
  */
-export function getQueryHotComment (data) {
-  return fetchGet('/api/HotType/QueryHotComment',data)
+export function negativeNCHotComment (data) {
+  return fetchGet('/api/Negative/NCHotComment',data)
 };
 /**
  * 首页热门分类
  */
-export function getQueryHotType (data) {
-  return fetchGet('/api/HotType/QueryHotType',data)
+export function negativeNCHotType (data) {
+  return fetchGet('/api/Negative/NCHotType',data)
+};
+/**
+ * 首页热门产品
+ */
+export function negativeNCHotProduct (data) {
+  return fetchGet('/api/Negative/NCHotProduct',data)
 };
 /**
  * 搜索
@@ -40,36 +46,43 @@ export function vote (data) {
 /**
  * 发布评论
  */
-export function addCommentInfo (data) {
-  return fetchPost('/api/HotType/AddCommentInfo',data)
+export function negativeAddNegativeComment (data) {
+  return fetchPost('/api/Negative/AddNegativeComment',data)
 };
 /**
  * 产品详情
  */
-export function getProcessDetails (data) {
-  return fetchGet('/api/HotType/QueryDetails',data)
+export function negativeProductDetail (data) {
+  return fetchGet('/api/Negative/ProductDetail',data)
 };
 /**
  * 产品评论
  */
-export function getQueryProductComment (data) {
-  return fetchGet('/api/HotType/QueryProductComment',data)
+export function negativeNCommentList (data) {
+  return fetchPost('/api/Negative/NCommentList',data)
 };
 /**
  * 分类列表
  */
-export function getTypeList () {
-  return fetchGet('api/HotType/TypeList')
+export function negativeNCType () {
+  return fetchGet('/api/Negative/NCType')
 };
 /**
  * 根据类型id查询产品
  */
-export function getTypeToProduct (data) {
-  return fetchGet('api/HotType/TypeToProduct',data)
+export function negativeNCProductListByType (data) {
+  return fetchGet('/api/Negative/NCProductListByType',data)
 };
 /**
  * 产品比较
  */
 export function compareToProduct (data) {
   return fetchPost('/api/HotType/CompareToProduct',data)
+};
+
+/**
+ * 差评网站标签
+ */
+export function negativeNLabe (data) {
+  return fetchGet('/api/Negative/NLabe',data)
 };

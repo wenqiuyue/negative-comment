@@ -16,7 +16,7 @@
             <div class="type_card_icon">
               <svg-icon value="icon-fuwuleixing" :size="1.6" :color="'#9AE5D6'"></svg-icon>
             </div>
-            <div class="type_card_text">{{item.name}}</div>
+            <div class="type_card_text">{{item.TypeName}}</div>
           </div>
           <div class="type_card" @click="goCategories">
             <div class="type_card_icon">
@@ -119,6 +119,7 @@ export default {
       searchData:null, //搜索
       hotReview:null, //热门评论
       hotType:null, //热门分类
+      hotProduct:null, //热门产品
     }
   },
   computed: {
@@ -146,8 +147,8 @@ export default {
       this.$router.push({
         path:'/product-list',
         query:{
-          Name:item.name,
-          Id:item.id
+          Name:item.TypeName,
+          Id:item.Id
         }
       })
     },
@@ -199,14 +200,20 @@ export default {
     getQueryCommentTypeData(){
       this.loading=true;
       Promise.all([
-        this.$apiHttp.getQueryHotType({params:{pageCount:3}}),
-        this.$apiHttp.getQueryHotComment({params:{pageCount:12}})
+        this.$apiHttp.negativeNCHotType({params:{count:3}}),
+        this.$apiHttp.negativeNCHotComment({params:{count:12}}),
+        this.$apiHttp.negativeNCHotProduct({params:{count:10}})
       ]).then((resp)=>{
-        if(resp[0].res == 200 && resp[1].res == 200){
+        if(resp[0].res == 200){
+          this.hotType=resp[0].data;
+        }
+        if(resp[1].res == 200){
           if(resp[1].data){
             this.hotReview = _.chunk(resp[1].data,2);
           }
-          this.hotType=resp[0].data;
+        }
+        if(resp[2].res == 200){
+          this.hotProduct=resp[2].data;
         }
         this.loading=false;
       })

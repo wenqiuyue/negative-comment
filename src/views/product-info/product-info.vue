@@ -8,7 +8,7 @@
             <div class="pro_main_info">
               <div class="p_m_i_top">
                 <el-image
-                  :src="processDetails.Cover"
+                  :src="url+processDetails.Cover"
                   fit="contain">
                   <div slot="error" class="error_img_tips">
                     Failed to load 
@@ -16,8 +16,8 @@
                 </el-image>
                 <div class="p_m_i_top_right">
                   <h2 @click="handleHomePage">{{processDetails.Name}}</h2>
-                  <h5><a :href="processDetails.Url" target="_blank">{{processDetails.Url.split('://')[1]}}</a>  •  {{processDetails.CommentCount?processDetails.CommentCount:0}} Reviews</h5>
-                </div>
+                  <h5><a :href="processDetails.Url" target="_blank">{{processDetails.Url}}</a>  •  {{processDetails.CommentCount?processDetails.CommentCount:0}} Reviews</h5>
+              </div>
               </div>
               <div class="p_m_i_bottom">
                 <div class="p_m_i_b_tablt">
@@ -89,6 +89,36 @@
                 </p>
               </div>  
             </div> -->
+            <div class="r_c_operation_group">
+                    <div class="r_c_operation">
+                      <svg-icon value="icon-rili" :size="1.2"></svg-icon>
+                      <span class="r_c_num">{{processDetails.BirthYear}}</span>
+                    </div>
+                    <div class="r_c_operation">
+                      <svg-icon value="icon-qian" :size="1.2"></svg-icon>
+                      <span class="r_c_num">${{processDetails.Price}}</span>
+                    </div>
+                    <div class="r_c_operation">
+                      <svg-icon value="icon-fenxiangzhuanqian" :size="1.2"></svg-icon>
+                      <span class="r_c_num">Earn</span>
+                    </div>
+                    <div class="r_c_operation">
+                      <svg-icon value="icon-cai" :size="1.2" @click="handleLike" v-preventReClick :color="likeProList.indexOf(processDetails.Id)==-1?'':'#FFD558'"></svg-icon>
+                      <span class="r_c_num">{{processDetails.Likes}}</span>
+                    </div>
+                    <div class="r_c_operation">
+                      <el-popover
+                        placement="bottom"
+                        trigger="click">
+                        <div>
+                          <p class="share_title">Please select where to share</p>
+                          <share :size="'2'" :url="$route.fullPath"></share>
+                        </div>
+                        <svg-icon value="icon-fenxiang" :size="1.2" slot="reference"></svg-icon>
+                      </el-popover>
+                      <span class="r_c_num r_c_num_share">{{processDetails.Shares}}</span>
+                    </div>
+                </div>
             <div class="right_Informations">
               <h3>What is the {{processDetails.Name}}</h3>
               <div class="r_r_Informations">
@@ -147,8 +177,8 @@
                         <span>Start in {{processDetails.BirthYear}}</span>
                       </span>
                       <span class="c_r_span">
-                        <svg-icon value="icon-xihuan"></svg-icon>
-                        <span>Likes ({{processDetails.Likes}})</span>
+                        <svg-icon value="icon-cai" :color="'#FFD558'"></svg-icon>
+                        <span>Dislikes ({{processDetails.Likes}})</span>
                       </span>
                       <span class="c_r_span" v-if="processDetails.Discount">
                         <svg-icon value="icon-fenxiangzhuanqian"></svg-icon>
@@ -190,7 +220,7 @@
             <div class="left_main_review">
               <div class="review_tag">
                 <div class="left_main_review_title">
-                  {{processDetails.Name}} Reviews ({{processDetails.CommentCount?processDetails.CommentCount:0}})
+                  {{processDetails.Name}} Reviews ({{commentPage.pageNum?commentPage.pageNum:0}})
                 </div>
                 <div class="Good_bad">
                   <div class="g_b_tag" :style="selgoodBadTagList.indexOf('Bad')!=-1?'background:#EE2F18':''"  @click="handleSelgoodBadTagList('Bad')">
@@ -222,7 +252,7 @@
                 <div class="left_main_review_card" v-for="(item,index) in productComment" :key="index">
                   <div class="user">
                     <div class="card_user">
-                      <el-avatar size="large" :src="item.Icon"></el-avatar>
+                      <el-avatar size="large" :src="url+item.Icon"></el-avatar>
                       <span class="user_name">{{item.Name}}</span>
                     </div>
                     <span class="date">{{item.Time?dateEnglish(item.Time):'--:--'}}</span>
@@ -238,7 +268,7 @@
                       <el-tooltip class="item" effect="dark" content="Useful" placement="top-start">
                         <svg-icon value="icon-xihuan1" :size="1.3" :style="likeReviewList.indexOf(`${processDetails.Id}-${item.ComentId}`)==-1?'color:#aaa':'color:#f56c6c'" @click="handleUseFul(item,index)" v-preventReClick></svg-icon>
                       </el-tooltip>
-                      <span>({{item.Likes}})</span>
+                      <span>({{item.Fabulous}})</span>
                     </div>
                   </div>
                   <div class="reply">
@@ -257,7 +287,7 @@
                 <div class="left_page" v-if="commentPage.pageNum>1">
                   <el-pagination
                     layout="prev, pager, next"
-                    :page-count="commentPage.pageNum"
+                    :total="commentPage.pageNum"
                     :current-page="commentPage.pageIndex"
                     :page-size="commentPage.pageSize"
                     @current-change="getQueryProductCommentData($event)"
@@ -300,6 +330,11 @@ export default {
       isClick:false, //是否点击
       selgoodBadTagList:[], //选择的好坏标签
       tabsActiveName:'1'
+    }
+  },
+  computed:{
+    url(){
+      return process.env.VUE_APP_BASE_URL;
     }
   },
   created(){
@@ -366,20 +401,21 @@ export default {
     getInit(){
       this.loading=true;
       const data={
-        Id:this.pid,
-        page:1,
-        pageCount:this.commentPage.pageSize
+        pid: parseInt(this.pid),
+        pageIndex:1,
+        pageCount:this.commentPage.pageSize,
+        ids:[],
       }
       Promise.all([
-        this.$apiHttp.getProcessDetails({params:{Id:this.pid}}),
-        this.$apiHttp.getQueryProductComment({params:data})
+        this.$apiHttp.negativeProductDetail({params:{pid:this.pid}}),
+        this.$apiHttp.negativeNCommentList(data)
       ]).then((resp)=>{
         if(resp[0].res==200 && resp[1].res==200){
           this.processDetails=resp[0].data;
-          this.productComment=resp[1].data.data;
-          this.commentPage.pageNum=resp[1].data.TotalPage;
-          this.loading=false;
+          this.productComment=resp[1].data.Item1;
+          this.commentPage.pageNum=resp[1].data.Item2;
         }
+        this.loading=false;
       })
     },
     /**
@@ -613,6 +649,7 @@ export default {
         .p_m_i_top{
           display: flex;
           flex-direction: row;
+          align-items: center;
           .el-image{
             width: 102px;
             height: 102px;
@@ -620,6 +657,7 @@ export default {
             box-shadow: 0 1px 3px 0 rgba(0,0,0,.1);
             padding: 5px;
             margin-right: 20px;
+            flex-shrink: 0;
           }
           .p_m_i_top_right{
             h2{
@@ -629,8 +667,10 @@ export default {
               text-overflow: ellipsis;
               -webkit-line-clamp: 2;
               overflow: hidden;
+              margin: 10px 0;
             }
             h5{
+              margin: 10px 0;
               font-weight:normal;
               color: #6d728b;
               a{
@@ -1133,6 +1173,38 @@ export default {
           padding-top: 5px;
           /deep/.el-carousel__container{
             height: 200px;
+          }
+        }
+      }
+      .r_c_operation_group{
+        background: #ffffff;
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 2px;
+        justify-content: space-around;
+        padding: 10px 5px;
+        border: 1px solid #e4ebf3;
+        border-radius: 10px;
+        .r_c_operation{
+          margin-right: 20px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          .r_c_num{
+            user-select: none;
+            font-size: 0.75rem;
+            margin-top: 3px;
+            color: #666666;
+          }
+          .r_c_num_share{
+            margin-top: 0;
+          }
+          svg{
+            color:#aaa;
+            cursor: pointer;
+            &:hover{
+              color:#1989fa;
+            }
           }
         }
       }

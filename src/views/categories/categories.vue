@@ -10,21 +10,21 @@
     </div>
     <div class="c_c_categories">
       <el-row :gutter="20" v-if="typeList && typeList.length>0">
-        <el-col :span="0" :xs="0">
+        <el-col :span="6" :xs="0">
           <div class="left_categories">
             <h3>View Category</h3>
             <ul>
-              <li v-for="(item,index) in typeList" :key="index" @click="handleLeftCategory(index)">{{item.Name}}</li>
+              <li v-for="(item,index) in typeList" :key="index" @click="handleLeftCategory(index)">{{item.TypeName}}</li>
             </ul>
           </div>
         </el-col>
-        <el-col :span="24" :xs="24">
+        <el-col :span="18" :xs="24">
           <div class="right_categories">
             <el-row :gutter="20" v-for="(item,index) in typeList" :key="index" class="right_row" :id="index">
-              <el-col :span="8"><div class="r_left_categories"><span>{{item.Name}}</span></div></el-col>
+              <el-col :span="8"><div class="r_left_categories"><span>{{item.TypeName}}</span></div></el-col>
               <el-col :span="16">
                 <div class="r_right_categories">
-                  <span v-for="(citem,cindex) in item.info" :key="cindex" @click="handleProductList(citem,item.Name)">{{citem.Name}}</span>
+                  <span v-for="(citem,cindex) in item.ChildData" :key="cindex" @click="handleProductList(citem,item.TypeName)">{{citem.TypeName}}</span>
                 </div>
               </el-col>
             </el-row>
@@ -54,7 +54,7 @@ export default {
      */
     getTypeListData(){
       this.loading=true;
-      this.$apiHttp.getTypeList().then((resp)=>{
+      this.$apiHttp.negativeNCType().then((resp)=>{
         if(resp.res==200){
           this.typeList=resp.data
         }
@@ -75,7 +75,7 @@ export default {
         path:'/product-list',
         query:{
           pName:name,
-          Name:item.Name,
+          Name:item.TypeName,
           Id:item.Id
         }
       })

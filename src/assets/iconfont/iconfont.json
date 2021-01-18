@@ -571,6 +571,13 @@
       "font_class": "icon_reply",
       "unicode": "e60d",
       "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "70970785",
+      "name": "踩",
+      "font_class": "cai",
+      "unicode": "e6ba",
+      "unicode_decimal": 59066
     }
   ]
 }

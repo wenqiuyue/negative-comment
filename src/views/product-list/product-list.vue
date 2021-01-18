@@ -5,15 +5,15 @@
       <div class="p_product-list_top">
         <div class="p_l_t_container">
           <div class="return" v-if="!searchWord && typeData.pName" ><span @click="$router.back()"><i class="el-icon-arrow-left"></i>{{typeData.pName}}</span></div>
-          <h2>{{`${proList&&proList.length?proList.length:0} result(s) for "${searchWord?searchWord:typeData.Name}"`}}</h2>
+          <h2>{{`${pageData.pageNum?pageData.pageNum:0} result(s) for "${searchWord?searchWord:typeData.Name}"`}}</h2>
           <h5>Find the right products for you and your internet business.</h5>
         </div>
       </div>
       <div class="p_product-list_container">
         <div v-if="proList&&proList.length>0">
-          <div class="list_card" v-for="(item,index) in proList" :key="index" @click="handleProductInfo(item.Id)">
+          <div class="list_card" v-for="(item,index) in proList" :key="index" @click="handleProductInfo(item.ProId)">
             <el-image
-              :src="item.Cover"
+              :src="url+item.Cover"
               fit="contain"
               >
                <div slot="error" class="error_img_tips">
@@ -38,7 +38,7 @@
       <div class="page" v-if="pageData.pageNum>1">
         <el-pagination
           layout="prev, pager, next"
-          :page-count="pageData.pageNum"
+          :total="pageData.pageNum"
           :current-page="pageData.pageIndex"
           :page-size="pageData.pageSize"
           @current-change="handleChangePage($event)"
@@ -66,6 +66,11 @@ export default {
         pageSize: 10,
         pageNum: 0,
       }
+    }
+  },
+  computed:{
+    url(){
+      return process.env.VUE_APP_BASE_URL;
     }
   },
   created(){
@@ -103,14 +108,14 @@ export default {
         this.pageData.pageIndex=1;
       }
       const data={
-        typeId:this.typeData.Id,
-        page:this.pageData.pageIndex,
+        typeid:this.typeData.Id,
+        pageIndex:this.pageData.pageIndex,
         pageCount:this.pageData.pageSize
       }
-      this.$apiHttp.getTypeToProduct({params:data}).then((resp)=>{
+      this.$apiHttp.negativeNCProductListByType({params:data}).then((resp)=>{
         if(resp.res==200){
-          this.proList=resp.data.query
-          this.pageData.pageNum=resp.data.pageCount;
+          this.proList=resp.data.Item1;
+          this.pageData.pageNum=resp.data.Item2;
         }
         this.loading=false;
       })
