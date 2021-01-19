@@ -22,14 +22,14 @@ export function negativeNCHotProduct (data) {
 /**
  * 搜索
  */
-export function querySearch (data) {
-  return fetchGet('/api/HotType/Seach',data)
+export function negativeNCProductListByName (data) {
+  return fetchGet('/api/Negative/NCProductListByName',data)
 };
 /**
  * 评论点赞
  */
-export function fabulous (data) {
-  return fetchGet('/api/HotType/ClickLikes',data)
+export function negativeAddFabulous (data) {
+  return fetchPost('/api/Negative/AddFabulous',data)
 };
 /**
  * 产品点赞

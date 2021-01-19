@@ -134,11 +134,11 @@ export default {
         this.pageData.pageIndex=1;
       }
       const data={
-        work:this.searchWord,
-        page:this.pageData.pageIndex,
+        name:this.searchWord,
+        pageIndex:this.pageData.pageIndex,
         pageCount:this.pageData.pageSize
       }
-      this.$apiHttp.querySearch({ params:data}).then((resp)=>{
+      this.$apiHttp.negativeNCProductListByName({ params:data}).then((resp)=>{
         if(resp.res==200){
           this.proList=resp.data.query;
           this.pageData.pageNum=resp.data.pageCount;

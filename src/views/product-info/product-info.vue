@@ -16,7 +16,7 @@
                 </el-image>
                 <div class="p_m_i_top_right">
                   <h2 @click="handleHomePage">{{processDetails.Name}}</h2>
-                  <h5><a :href="processDetails.Url" target="_blank">{{processDetails.Url}}</a>  •  {{processDetails.CommentCount?processDetails.CommentCount:0}} Reviews</h5>
+                  <h5><a :href="processDetails.Url" target="_blank">{{processDetails.Url}}</a>  •  {{commentPage.pageNum?commentPage.pageNum:0}} Reviews</h5>
               </div>
               </div>
               <div class="p_m_i_bottom">
@@ -259,19 +259,17 @@
                   </div>
                   <p class="card_text" v-html="item.Content"></p>
                   <div class="review_tag_list">
-                    <el-tag size="small">标签二</el-tag>
-                    <el-tag size="small">标签二</el-tag>
-                    <el-tag size="small">标签二</el-tag>
+                    <el-tag size="small" v-for="(tag,index) in item.LabelName" :key="index">{{tag.Name}}</el-tag>
                   </div>
                   <div class="score_date">
                     <div class="card_bottom">
                       <el-tooltip class="item" effect="dark" content="Useful" placement="top-start">
-                        <svg-icon value="icon-xihuan1" :size="1.3" :style="likeReviewList.indexOf(`${processDetails.Id}-${item.ComentId}`)==-1?'color:#aaa':'color:#f56c6c'" @click="handleUseFul(item,index)" v-preventReClick></svg-icon>
+                        <svg-icon value="icon-xihuan1" :size="1.3" :style="likeReviewList.indexOf(`${processDetails.Id}-${item.Id}`)==-1?'color:#aaa':'color:#f56c6c'" @click="handleUseFul(item,index)" v-preventReClick></svg-icon>
                       </el-tooltip>
                       <span>({{item.Fabulous}})</span>
                     </div>
                   </div>
-                  <div class="reply">
+                  <!-- <div class="reply">
                     <svg-icon value="icon-icon_reply"></svg-icon>
                     <div class="reply_right">
                       <div class="reply_right_user">
@@ -282,7 +280,7 @@
                         Thank you for your review, Diane. We are so happy to hear you have had a great experience . Thank you for choosing PPG!
                       </div>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
                 <div class="left_page" v-if="commentPage.pageNum>1">
                   <el-pagination
@@ -329,7 +327,8 @@ export default {
       isMoreRow:false, //产品介绍是否需要显示更多
       isClick:false, //是否点击
       selgoodBadTagList:[], //选择的好坏标签
-      tabsActiveName:'1'
+      tabsActiveName:'1',
+      labelData:null, //标签
     }
   },
   computed:{
@@ -408,12 +407,18 @@ export default {
       }
       Promise.all([
         this.$apiHttp.negativeProductDetail({params:{pid:this.pid}}),
-        this.$apiHttp.negativeNCommentList(data)
+        this.$apiHttp.negativeNCommentList(data),
+        this.$apiHttp.negativeNLabe({params:{pid:this.pid}})
       ]).then((resp)=>{
-        if(resp[0].res==200 && resp[1].res==200){
-          this.processDetails=resp[0].data;
+        if(resp[0].res==200){
+          this.processDetails=resp[0].data;    
+        }
+        if(resp[1].res==200){
           this.productComment=resp[1].data.Item1;
           this.commentPage.pageNum=resp[1].data.Item2;
+        }
+        if(resp[2].res==200){
+          this.labelData=resp[2].data;
         }
         this.loading=false;
       })
@@ -423,7 +428,7 @@ export default {
      */
     getProcessDetailsData(){
       this.loading=true;
-      this.$apiHttp.getProcessDetails({params:{Id:this.pid}}).then((resp)=>{
+      this.$apiHttp.negativeProductDetail({params:{pid:this.pid}}).then((resp)=>{
         if(resp.res==200){
           this.processDetails=resp.data
         }
@@ -436,15 +441,16 @@ export default {
     getQueryProductCommentData(page){
       this.commentPage.pageIndex=page;
       const data={
-        Id:this.pid,
-        page:this.commentPage.pageIndex,
-        pageCount:this.commentPage.pageSize
+        pid: parseInt(this.pid),
+        pageIndex:this.commentPage.pageIndex,
+        pageCount:this.commentPage.pageSize,
+        ids:[],
       };
       this.loading=true;
-      this.$apiHttp.getQueryProductComment({params:data}).then((resp)=>{
+      this.$apiHttp.negativeNCommentList(data).then((resp)=>{
         if(resp.res==200){
-          this.productComment=resp.data.data;
-          this.commentPage.pageNum=resp.data.TotalPage;
+          this.productComment=resp.data.Item1;;
+          this.commentPage.pageNum=resp.data.Item2;
         }
         this.loading=false;
       })
@@ -498,20 +504,20 @@ export default {
      */
     handleUseFul(com,index){
       //该评论点过赞，则退出
-       if(this.likeReviewList.indexOf(`${this.processDetails.Id}-${com.ComentId}`)!=-1 || this.isClick){
+       if(this.likeReviewList.indexOf(`${this.processDetails.Id}-${com.Id}`)!=-1 || this.isClick){
         return;
       }
       this.isClick=true;
-      this.$apiHttp.fabulous({params:{Id:com.ComentId}}).then((resp)=>{
+      this.$apiHttp.negativeAddFabulous({cid:com.Id}).then((resp)=>{
         if(resp.res==200){
           this.$message({
             message: 'Comments like success',
             type: 'success'
           });
           //评论点赞成功后，则将缓存评论数据
-          this.likeReviewList.push(`${this.processDetails.Id}-${com.ComentId}`);
-          localStorage.setItem(types.LIKE_REVIEW, JSON.stringify(this.likeReviewList));
-          this.productComment[index].Likes = this.productComment[index].Likes + 1;
+          this.likeReviewList.push(`${this.processDetails.Id}-${com.Id}`);
+          localStorage.setItem(types.LIKE_REVIEW_NEGATIVE, JSON.stringify(this.likeReviewList));
+          this.productComment[index].Fabulous = this.productComment[index].Fabulous + 1;
         }
         this.isClick=false;
       })
@@ -521,7 +527,7 @@ export default {
      */
     getLikeReviewList(){
       this.likeReviewList=[];
-      const lReviewList=JSON.parse(localStorage.getItem(types.LIKE_REVIEW));
+      const lReviewList=JSON.parse(localStorage.getItem(types.LIKE_REVIEW_NEGATIVE));
       if(lReviewList){
         this.likeReviewList=lReviewList;
       }

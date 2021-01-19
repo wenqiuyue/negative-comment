@@ -35,7 +35,7 @@
             <div class="r_r_r_c_card" v-for="(review,ind) in item" :key="ind">
               <div class="c_title">
                 <el-avatar class="c_t_img" size="large" :src="review.Icon"></el-avatar>
-                <p class="c_user">{{review.Name}} <span class="rev">reviewed</span> <span :data-pro="JSON.stringify(review)" :id="review.ComentId"  class="pro">{{review.ProName}}</span></p>
+                <p class="c_user">{{review.Name}} <span class="rev">reviewed</span> <span :data-pro="JSON.stringify(review)" :id="review.Id"  class="pro">{{review.ProName}}</span></p>
               </div>
               <p class="c_text">
                 {{review.Content}}
@@ -52,7 +52,7 @@
           <div class="r_r_r_card" v-for="(item,index) in hotReview" :key="index">
             <div class="r_r_r_c_card" v-for="(review,ind) in item" :key="ind">
               <div class="c_title">
-                <el-avatar class="c_t_img" size="large" :src="review.Icon"></el-avatar>
+                <el-avatar class="c_t_img" size="large" :src="url+review.Icon"></el-avatar>
                 <p class="c_user">{{review.Name}} <span class="rev">reviewed</span> <span @click="handleProInfo(review)" class="pro">{{review.ProName}}</span></p>
               </div>
               <p class="c_text">
@@ -65,34 +65,35 @@
     </div>
     <div class="terrible_business">
       <div class="t_b_title">Most Terrible Business</div>
-      <div class="t_b_list" v-if="true">
-        <div class="t_b_card" v-for="(item,index) in 11" :key="index">
+      <div class="t_b_list" v-if="hotProduct && hotProduct.length">
+        <div class="t_b_card" v-for="(item,index) in hotProduct" :key="item.ProId" @click="handleProInfo(item)">
           <div class="c_product">
             <div class="p_img">
               <img
-                src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
+                :src="url+item.Image"
               >
               </img>
             </div>
             <div class="c_p_right">
-              <p>amp.com.au</p>
+              <p>{{item.Name}}</p>
               <div class="c_p_r_score">
-                <rate
+                <!-- <rate
                   class="c_t_rate"
                   :value="3"
                   :isDisabled="true"
                 >
-                </rate>
+                </rate> -->
                 <span class="score">2.9/5</span>
               </div>
             </div>
           </div>
           <p class="t_b_c_text">
-            GST Registration is a process by which a citizen gets himself registered under GST. When a business is effectively registered.
+            {{item.Content}}
           </p>
-          <p class="t_b_c_user">7 months ago  •  by Deleted User</p>
+          <p class="t_b_c_user">{{item.Time?dateEnglish(item.Time):'--:--'}}  •  by {{item.UserName}}</p>
         </div>
-        <div class="t_b_card t_b_card_empty" v-for="(item) in 2" :key="item"></div>
+        <div class="t_b_card t_b_card_empty"></div>
+        <div class="t_b_card t_b_card_empty"></div>
       </div>
        <empty v-else :tips="'No data available'" :paddingData="3"></empty>
     </div>
@@ -109,6 +110,7 @@
 </template>
 <script>
 import vueSeamlessScroll from 'vue-seamless-scroll'
+import {dateEnglish} from '../../commons';
 export default {
   components:{
     vueSeamlessScroll
@@ -123,6 +125,9 @@ export default {
     }
   },
   computed: {
+    url(){
+      return process.env.VUE_APP_BASE_URL;
+    },
     defaultOption () {
       return {
         step: 1, // 数值越大速度滚动越快
@@ -140,6 +145,7 @@ export default {
     this.getQueryCommentTypeData();
   },
   methods:{
+    dateEnglish,
     /**
      * 去当前热门分类的产品列表
      */
@@ -339,7 +345,7 @@ export default {
       padding:65px 0 60px 0;
     }
     .r_r_reviews{
-      padding: 0 12px;
+      padding: 5px 12px;
       display:flex;
       flex-direction: row;
       width: 2160px;
