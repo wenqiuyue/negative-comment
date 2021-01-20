@@ -140,8 +140,8 @@ export default {
       }
       this.$apiHttp.negativeNCProductListByName({ params:data}).then((resp)=>{
         if(resp.res==200){
-          this.proList=resp.data.query;
-          this.pageData.pageNum=resp.data.pageCount;
+          this.proList=resp.data.Item1;
+          this.pageData.pageNum=resp.data.Item2;
         }
         this.loading=false;
       })

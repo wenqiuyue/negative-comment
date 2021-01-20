@@ -83,7 +83,7 @@
                   :isDisabled="true"
                 >
                 </rate> -->
-                <span class="score">2.9/5</span>
+                <span class="score">{{item.Score}}%</span>
               </div>
             </div>
           </div>
@@ -222,13 +222,16 @@ export default {
           this.hotProduct=resp[2].data;
         }
         this.loading=false;
+      }).catch(()=>{
+        this.loading=false;
       })
     },
     /**
      * 查看分类
      */
     goCategories(){
-      this.$router.push({ path: '/categories'});
+      window.location.href='http://192.168.1.15:8080/categories';
+      // this.$router.push({ path: '/categories'});
     }
   }
 }

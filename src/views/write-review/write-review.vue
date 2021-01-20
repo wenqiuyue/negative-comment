@@ -22,12 +22,12 @@
         <el-form :model="reviewForm" :rules="rules" ref="ruleForm" label-width="100px">
           <h2>Bad Comment Label</h2>
           <el-form-item prop="label" class="label_item">
-            <el-select v-model="reviewForm.label" multiple placeholder="Please select a label">
+            <el-select v-model="reviewForm.Label" multiple placeholder="Please select a label">
               <el-option
                 v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                :key="item.Id"
+                :label="item.Name"
+                :value="item.Id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -98,7 +98,7 @@ export default {
         Email:null, //邮箱
         Name:null, //用户名称
         Img:'/Images/avt/24d6f473-51d9-4f66-aa7c-2d00f8d7ba63.png', //用户头像
-        label:[], //标签
+        Label:[], //标签
         Code:null, //验证码
         IP:'111'
       },

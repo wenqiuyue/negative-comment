@@ -47,6 +47,8 @@ export default {
   },
   mounted(){
     this.getTypeListData();
+    const a=window.top.document.referrer;
+    console.log(a)
   },
   methods:{
     /**

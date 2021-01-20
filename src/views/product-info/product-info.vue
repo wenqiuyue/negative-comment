@@ -15,36 +15,20 @@
                   </div>
                 </el-image>
                 <div class="p_m_i_top_right">
-                  <h2 @click="handleHomePage">{{processDetails.Name}}</h2>
-                  <h5><a :href="processDetails.Url" target="_blank">{{processDetails.Url}}</a>  •  {{commentPage.pageNum?commentPage.pageNum:0}} Reviews</h5>
+                  <h2>{{processDetails.Name}}</h2>
+                  <h5><a :href="`http://localhost:8080/check-page?url=${this.processDetails.Url}`" target="_blank">{{processDetails.Url}}</a>  •  {{commentPage.pageNum?commentPage.pageNum:0}} Reviews</h5>
               </div>
               </div>
               <div class="p_m_i_bottom">
                 <div class="p_m_i_b_tablt">
                   <div class="main_score">
-                    <p class="score">3.2 <span>/ 5</span></p>
-                    <p class="score_text">Main Score</p>
+                    <p class="score">{{processDetails.Score!=0?processDetails.Score.toFixed(1):0}} <span>/ {{commentPage.pageNum?commentPage.pageNum:0}}</span></p>
+                    <p class="score_text">Untrust Rate</p>
                   </div>
                   <div class="table_score">
-                    <div class="table_score_item">
-                      <p>3.9</p>
-                      <p>Bad</p>
-                    </div>
-                    <div class="table_score_item">
-                      <p>3.9</p>
-                      <p>Poor</p>
-                    </div>
-                    <div class="table_score_item">
-                      <p>3.9</p>
-                      <p>Average</p>
-                    </div>
-                    <div class="table_score_item">
-                      <p>3.9</p>
-                      <p>Great</p>
-                    </div>
-                    <div class="table_score_item">
-                      <p>3.9</p>
-                      <p>Excellent</p>
+                    <div class="table_score_item" v-for="(tag,index) in labelData" :key="index">
+                      <p>{{tag.Count}}</p>
+                      <p>{{tag.Name}}</p>
                     </div>
                   </div>
                 </div>
@@ -93,10 +77,6 @@
                     <div class="r_c_operation">
                       <svg-icon value="icon-rili" :size="1.2"></svg-icon>
                       <span class="r_c_num">{{processDetails.BirthYear}}</span>
-                    </div>
-                    <div class="r_c_operation">
-                      <svg-icon value="icon-qian" :size="1.2"></svg-icon>
-                      <span class="r_c_num">${{processDetails.Price}}</span>
                     </div>
                     <div class="r_c_operation">
                       <svg-icon value="icon-fenxiangzhuanqian" :size="1.2"></svg-icon>
@@ -223,25 +203,9 @@
                   {{processDetails.Name}} Reviews ({{commentPage.pageNum?commentPage.pageNum:0}})
                 </div>
                 <div class="Good_bad">
-                  <div class="g_b_tag" :style="selgoodBadTagList.indexOf('Bad')!=-1?'background:#EE2F18':''"  @click="handleSelgoodBadTagList('Bad')">
-                    <span>Bad</span>
-                    <span>20%</span>
-                  </div>
-                  <div class="g_b_tag" :style="selgoodBadTagList.indexOf('Poor')!=-1?'background:#F5AE1A':''"  @click="handleSelgoodBadTagList('Poor')">
-                    <span>Poor</span>
-                    <span>20%</span>
-                  </div>
-                  <div class="g_b_tag" :style="selgoodBadTagList.indexOf('Average')!=-1?'background:#FCD628':''" @click="handleSelgoodBadTagList('Average')">
-                    <span>Average</span>
-                    <span>20%</span>
-                  </div>
-                  <div class="g_b_tag" :style="selgoodBadTagList.indexOf('Great')!=-1?'background:#A4CD32':''" @click="handleSelgoodBadTagList('Great')">
-                    <span>Great</span>
-                    <span>20%</span>
-                  </div>
-                  <div class="g_b_tag" :style="selgoodBadTagList.indexOf('Excellent')!=-1?'background:#00C48A':''" @click="handleSelgoodBadTagList('Excellent')">
-                    <span>Excellent</span>
-                    <span>20%</span>
+                  <div class="g_b_tag" v-for="(tag,index) in labelData" :key="index" :style="selgoodBadTagList.indexOf(index)!=-1?tagBackColor(index):''"  @click="handleSelgoodBadTagList(index,tag.Id)">
+                    <span>{{tag.Name}}</span>
+                    <span>{{tag.Prop&&tag.Prop!=0?tag.Prop.toFixed(1):0}}%</span>
                   </div>
                 </div>
                 <el-tabs class="tag_tab" v-model="tabsActiveName" @tab-click="handleTabsClick">
@@ -329,6 +293,8 @@ export default {
       selgoodBadTagList:[], //选择的好坏标签
       tabsActiveName:'1',
       labelData:null, //标签
+      labelNumAverage:null, //标签平均条数
+      selTagIds:[], //选择的标签id数组
     }
   },
   computed:{
@@ -355,6 +321,24 @@ export default {
   methods:{
     dateEnglish,
     /**
+     * 标签背景颜色
+     */
+    tagBackColor(index){
+      if(index==0){
+        return 'background:#EE2F18';
+      }else if(index==1){
+        return 'background:#F5AE1A';
+      }else if(index==2){
+        return 'background:#FCD628';
+      }else if(index==3){
+        return 'background:#A4CD32';
+      }else if(index==4){
+        return 'background:#00C48A';
+      }else{
+        return '';
+      }
+    },
+    /**
      * 评论标签页选择
      */
     handleTabsClick(tab,event){
@@ -363,18 +347,21 @@ export default {
     /**
      * 选择好坏标签
      */
-    handleSelgoodBadTagList(tag){
+    handleSelgoodBadTagList(tag,id){
       if(this.selgoodBadTagList.indexOf(tag)!=-1){
-        this.selgoodBadTagList=this.selgoodBadTagList.filter((m)=> m!=tag)
+        this.selgoodBadTagList=this.selgoodBadTagList.filter((m)=> m!=tag);
+        this.selTagIds=this.selTagIds.filter((s)=> s!=id)
       }else{
         this.selgoodBadTagList.push(tag);
+        this.selTagIds.push(id)
       }
+      this.getQueryProductCommentData(1);
     },
     /**
      * 相关产品
      */
     handleTypeProductCommand(com){
-      window.open("http://120.25.67.116:8030/product-info?pid="+com);
+      window.open("http://localhost:8080/product-info?pid="+com);
     },
     /**
      * 评论分数进入写评论
@@ -392,7 +379,7 @@ export default {
      * 跳转产品页
      */
     handleHomePage(url){
-      window.open("http://120.25.67.116:8030/check-page?url="+this.processDetails.Url);
+      window.open("http://localhost:8080/check-page?url="+this.processDetails.Url);
     },
     /**
      * 产品详情数据初始化
@@ -403,7 +390,7 @@ export default {
         pid: parseInt(this.pid),
         pageIndex:1,
         pageCount:this.commentPage.pageSize,
-        ids:[],
+        ids:this.selTagIds,
       }
       Promise.all([
         this.$apiHttp.negativeProductDetail({params:{pid:this.pid}}),
@@ -418,7 +405,13 @@ export default {
           this.commentPage.pageNum=resp[1].data.Item2;
         }
         if(resp[2].res==200){
-          this.labelData=resp[2].data;
+          this.labelData=resp[2].data.filter((m,index)=> index<=4);
+          //计算标签平均条数
+          let sum=0;
+          this.labelData.forEach(element => {
+            sum=sum+element.Count
+          });
+          this.labelNumAverage=sum/this.labelData.length;
         }
         this.loading=false;
       })
@@ -444,7 +437,7 @@ export default {
         pid: parseInt(this.pid),
         pageIndex:this.commentPage.pageIndex,
         pageCount:this.commentPage.pageSize,
-        ids:[],
+        ids:this.selTagIds,
       };
       this.loading=true;
       this.$apiHttp.negativeNCommentList(data).then((resp)=>{
