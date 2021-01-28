@@ -70,7 +70,7 @@
             </el-form-item>
           </div>
           <el-form-item>
-            <el-button type="primary" style="width:100%" @click="handleSubmit">Submit My Review</el-button>
+            <el-button type="primary" style="width:100%" @click="handleSubmit">Submit My Complaint</el-button>
           </el-form-item>
         </el-form>
       </div>

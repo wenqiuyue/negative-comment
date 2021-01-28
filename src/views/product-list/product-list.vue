@@ -25,7 +25,7 @@
                 <span class="l_c_r_title">{{item.Name}}</span>
               </div>
               <div class="l_c_r_score">
-                <span class="score_num">{{item.CommentCount}} reviews</span>
+                <span class="score_num">{{item.CommentCount}} Complaints</span>
                 <el-tag type="primary" size="small" v-if="item.Price">${{item.Price}} one time fee</el-tag>
                 <el-tag type="success" size="small" v-if="item.Discount">{{item.Discount}}</el-tag>
               </div>
@@ -266,6 +266,10 @@ export default {
       }
       .page{
         background: #ffffff;
+        .el-pagination{
+          max-width: 1056px;
+          margin: 0 auto;
+        }
       }
     }
     @media all and (max-width: 1024px) {

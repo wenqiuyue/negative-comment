@@ -5,7 +5,7 @@
     <div class="banner">
       <div class="c_banner">
         <h1 class="title_1">Behind every comment is a story</h1>
-        <h2 class="title_2">Read reviews. Write reviews. Find businesses.</h2>
+        <h2 class="title_2">Read complaints. Write complaints. Find businesses.</h2>
         <div class="b_search">
           <el-input class="s_input" v-model="searchData" placeholder="Search for a company or category…"></el-input>
           <el-button class="s_button" type="primary" icon="el-icon-search" @click="handleSearch">Search</el-button>
@@ -28,14 +28,14 @@
       </div>
     </div>
     <div class="recent_reviews pc" @click="clickCard($event)">
-      <div class="r_r_title">Recent reviews</div>
+      <div class="r_r_title">Recent Complaints</div>
       <vue-seamless-scroll v-if="hotReview && hotReview.length>0" :data="hotReview" :class-option="defaultOption" class="seamless-warp">
         <div class="r_r_reviews" >
           <div class="r_r_r_card" v-for="(item,index) in hotReview" :key="index">
             <div class="r_r_r_c_card" v-for="(review,ind) in item" :key="ind">
               <div class="c_title">
                 <el-avatar class="c_t_img" size="large" :src="review.Icon"></el-avatar>
-                <p class="c_user">{{review.Name}} <span class="rev">reviewed</span> <span :data-pro="JSON.stringify(review)" :id="review.Id"  class="pro">{{review.ProName}}</span></p>
+                <p class="c_user">{{review.Name}} <span class="rev">complained</span> <span :data-pro="JSON.stringify(review)" :id="review.Id"  class="pro">{{review.ProName}}</span></p>
               </div>
               <p class="c_text">
                 {{review.Content}}
@@ -47,13 +47,13 @@
       <empty v-else :tips="'No hot comments'" :paddingData="3"></empty>
     </div>
     <div class="recent_reviews phone">
-      <div class="r_r_title">Recent reviews</div>
+      <div class="r_r_title">Recent Complaints</div>
         <div class="r_r_reviews" v-if="hotReview && hotReview.length>0">
           <div class="r_r_r_card" v-for="(item,index) in hotReview" :key="index">
             <div class="r_r_r_c_card" v-for="(review,ind) in item" :key="ind">
               <div class="c_title">
                 <el-avatar class="c_t_img" size="large" :src="url+review.Icon"></el-avatar>
-                <p class="c_user">{{review.Name}} <span class="rev">reviewed</span> <span @click="handleProInfo(review)" class="pro">{{review.ProName}}</span></p>
+                <p class="c_user">{{review.Name}} <span class="rev">complained</span> <span @click="handleProInfo(review)" class="pro">{{review.ProName}}</span></p>
               </div>
               <p class="c_text">
                 {{review.Content}}
@@ -83,7 +83,8 @@
                   :isDisabled="true"
                 >
                 </rate> -->
-                <span class="score">{{item.Score}}%</span>
+                <el-tag size="medium">Untrust Rate: {{item.Score}}%</el-tag>
+                <!-- <span class="score">Untrust Rate: {{item.Score}}%</span> -->
               </div>
             </div>
           </div>
@@ -100,7 +101,7 @@
     <div class="be_heard">
       <h1 class="heard_title">About Sitespilot</h1>
       <p class="heard_text">
-        Sitespilot.com is committed to creating the most authentic review platform, where everyone can easily share the most authentic experience. Provide valuable reference for other users.
+        Sitespilot.com is committed to creating the most authentic complain platform, where everyone can easily share the most authentic experience. Provide valuable reference for other users.
       </p>
       <div class="what_do"><el-button class="companies" type="gone" plain @click="goCategories">Find out</el-button></div>
     </div>
@@ -479,8 +480,7 @@ export default {
                   }
                 .score{
                   color: #787d97;
-                  font-size: 18px;
-                  font-weight: bold;
+                  font-size: 16px;
                   margin-left: 5px;
                 }
               }

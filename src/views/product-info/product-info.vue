@@ -16,7 +16,7 @@
                 </el-image>
                 <div class="p_m_i_top_right">
                   <h2>{{processDetails.Name}}</h2>
-                  <h5><a :href="`http://localhost:8080/check-page?url=${this.processDetails.Url}`" target="_blank">{{processDetails.Url}}</a>  •  {{commentPage.pageNum?commentPage.pageNum:0}} Reviews</h5>
+                  <h5><a :href="`http://localhost:8080/check-page?url=${this.processDetails.Url}`" target="_blank">{{processDetails.Url}}</a>  •  {{commentPage.pageNum?commentPage.pageNum:0}} Complaints</h5>
               </div>
               </div>
               <div class="p_m_i_bottom">
@@ -27,7 +27,7 @@
                   </div>
                   <div class="table_score">
                     <div class="table_score_item" v-for="(tag,index) in labelData" :key="index">
-                      <p>{{tag.Count}}</p>
+                      <p>{{tag.Prop}}%</p>
                       <p>{{tag.Name}}</p>
                     </div>
                   </div>
@@ -73,7 +73,7 @@
                 </p>
               </div>  
             </div> -->
-            <div class="r_c_operation_group">
+            <!-- <div class="r_c_operation_group">
                     <div class="r_c_operation">
                       <svg-icon value="icon-rili" :size="1.2"></svg-icon>
                       <span class="r_c_num">{{processDetails.BirthYear}}</span>
@@ -98,7 +98,7 @@
                       </el-popover>
                       <span class="r_c_num r_c_num_share">{{processDetails.Shares}}</span>
                     </div>
-                </div>
+                </div> -->
             <div class="right_Informations">
               <h3>What is the {{processDetails.Name}}</h3>
               <div class="r_r_Informations">
@@ -146,7 +146,7 @@
                     <div class="card_right">
                       <span class="c_r_span">
                         <svg-icon value="icon-icon_pinglun"></svg-icon>
-                        <span>Reviews ({{processDetails.CommentCount}})</span>
+                        <span>Complaints ({{processDetails.CommentCount}})</span>
                       </span>
                       <span class="c_r_span" v-if="processDetails.Price">
                         <svg-icon value="icon-qian"></svg-icon>
@@ -154,7 +154,7 @@
                       </span>
                       <span class="c_r_span">
                         <svg-icon value="icon-rili"></svg-icon>
-                        <span>Start in {{processDetails.BirthYear}}</span>
+                        <span>Since {{processDetails.BirthYear}}</span>
                       </span>
                       <span class="c_r_span">
                         <svg-icon value="icon-cai" :color="'#FFD558'"></svg-icon>
@@ -194,18 +194,18 @@
               <div class="write_one"></div>
               <div class="write_two"></div>
               <div class="write_three">
-                <div class="t_title" @click="handleWriteReview">Write a review...</div>
+                <div class="t_title" @click="handleWriteReview">Write a complaint...</div>
               </div>
             </div>
             <div class="left_main_review">
               <div class="review_tag">
                 <div class="left_main_review_title">
-                  {{processDetails.Name}} Reviews ({{commentPage.pageNum?commentPage.pageNum:0}})
+                  {{processDetails.Name}} Complaints ({{commentPage.pageNum?commentPage.pageNum:0}})
                 </div>
                 <div class="Good_bad">
                   <div class="g_b_tag" v-for="(tag,index) in labelData" :key="index" :style="selgoodBadTagList.indexOf(index)!=-1?tagBackColor(index):''"  @click="handleSelgoodBadTagList(index,tag.Id)">
                     <span>{{tag.Name}}</span>
-                    <span>{{tag.Prop&&tag.Prop!=0?tag.Prop.toFixed(1):0}}%</span>
+                    <span>{{tag.Count}}</span>
                   </div>
                 </div>
                 <el-tabs class="tag_tab" v-model="tabsActiveName" @tab-click="handleTabsClick">
@@ -257,7 +257,7 @@
                   </el-pagination>
                 </div>
               </div>
-              <empty v-else :tips="'No Reviews'" :paddingData="3"></empty>
+              <empty v-else :tips="'No Complaints'" :paddingData="3"></empty>
             </div>
           </el-col>
         </el-row>
