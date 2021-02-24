@@ -34,9 +34,10 @@
           <div class="r_r_r_card" v-for="(item,index) in hotReview" :key="index">
             <div class="r_r_r_c_card" v-for="(review,ind) in item" :key="ind">
               <div class="c_title">
-                <el-avatar class="c_t_img" size="large" :src="review.Icon"></el-avatar>
+                <el-avatar class="c_t_img" size="large" :src="url+review.Icon"></el-avatar>
                 <p class="c_user">{{review.Name}} <span class="rev">complained</span> <span :data-pro="JSON.stringify(review)" :id="review.Id"  class="pro">{{review.ProName}}</span></p>
               </div>
+              <p class="c_text_title">{{review.Title}}</p>
               <p class="c_text">
                 {{review.Content}}
               </p>
@@ -55,6 +56,7 @@
                 <el-avatar class="c_t_img" size="large" :src="url+review.Icon"></el-avatar>
                 <p class="c_user">{{review.Name}} <span class="rev">complained</span> <span @click="handleProInfo(review)" class="pro">{{review.ProName}}</span></p>
               </div>
+              <p class="c_text_title">{{review.Title}}</p>
               <p class="c_text">
                 {{review.Content}}
               </p>
@@ -88,9 +90,10 @@
               </div>
             </div>
           </div>
-          <p class="t_b_c_text">
-            {{item.Content}}
-          </p>
+          <div class="t_b_c_text">
+            <div class="t_b_c_title">{{item.Title}}</div>
+            <div class="t_b_c_con">{{item.Content}}</div>
+          </div>
           <p class="t_b_c_user">{{item.Time?dateEnglish(item.Time):'--:--'}}  •  by {{item.UserName}}</p>
         </div>
         <div class="t_b_card t_b_card_empty"></div>
@@ -394,6 +397,16 @@ export default {
               cursor: pointer;
             }
           }
+          .c_text_title{
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            -webkit-box-orient: vertical;
+            margin-bottom: 3px;
+            margin-top: 10px;
+            // font-weight: bold;
+          }
           .c_text{
             font-size: 0.875rem;
             display: -webkit-box;
@@ -402,7 +415,7 @@ export default {
             text-overflow: ellipsis;
             -webkit-box-orient: vertical;
             color: #1B1B21;
-            margin-top: 10px;
+            margin-top: 8px;
           }
         }
       }
@@ -494,15 +507,23 @@ export default {
             padding-bottom: 13px;
           }
           .t_b_c_text{
-            font-size: 0.875rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            -webkit-box-orient: vertical;
-            color: #1B1B21;
             border-top: 1px solid #e4ebf3;
+            margin-top: 16px;
             padding-top: 10px;
+            .t_b_c_title{
+              color: #1B1B21;
+              margin-bottom: 5px;
+            }
+            .t_b_c_con{
+              font-size: 0.875rem;
+              display: -webkit-box;
+              -webkit-line-clamp: 4;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              -webkit-box-orient: vertical;
+              color: #454554;
+              margin-bottom: 5px;
+            }
           }
       }
       .t_b_card_empty{

@@ -221,6 +221,7 @@
                     </div>
                     <span class="date">{{item.Time?dateEnglish(item.Time):'--:--'}}</span>
                   </div>
+                   <p class="casr_title">{{item.Title}}</p>
                   <p class="card_text" v-html="item.Content"></p>
                   <div class="review_tag_list">
                     <el-tag size="small" v-for="(tag,index) in item.LabelName" :key="index">{{tag.Name}}</el-tag>
@@ -956,6 +957,17 @@ export default {
               word-break: break-all;
             }
           }
+        }
+        .casr_title{
+          margin: 0 0 8px 0;
+          color: #32323d;
+          font-size: 16px;
+          font-weight: bold;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          -webkit-box-orient: vertical;
         }
         .card_text{
           margin: 0;

@@ -31,6 +31,14 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <h2>Comment title</h2>
+          <el-form-item prop="Title" style="margin-bottom:0">
+            <el-input
+              class="input_experience"
+              placeholder="Comment title"
+              v-model="reviewForm.Title">
+            </el-input>
+          </el-form-item>
           <h2>Tell us about your experience</h2>
           <el-form-item prop="Content">
             <el-input
@@ -97,10 +105,11 @@ export default {
         Content:null, //评论内容
         Email:null, //邮箱
         Name:null, //用户名称
-        Img:'/Images/avt/24d6f473-51d9-4f66-aa7c-2d00f8d7ba63.png', //用户头像
+        Img:'/Images/avt/b7ea7693-c605-47bf-89ee-16f4d24dd00f.png', //用户头像
         Label:[], //标签
         Code:null, //验证码
-        IP:'111'
+        IP:'111',
+        Title:null
       },
       options: [], //标签
       codeValidate:null, //当前验证码
