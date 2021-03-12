@@ -132,6 +132,9 @@ export default {
     url(){
       return process.env.VUE_APP_BASE_URL;
     },
+    pageUrl(){
+      return process.env.VUE_APP_PAGE_URL;
+    },
     defaultOption () {
       return {
         step: 1, // 数值越大速度滚动越快
@@ -234,7 +237,7 @@ export default {
      * 查看分类
      */
     goCategories(){
-      window.location.href='http://192.168.1.15:8080/categories';
+      window.location.href=`${this.pageUrl}/categories`;
       // this.$router.push({ path: '/categories'});
     }
   }

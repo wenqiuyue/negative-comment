@@ -41,4 +41,10 @@ export default [
 		name: 'check-page',
 		component: () => import('../../views/check-page/check-page.vue'),
 	},
+  //根据条件查询评论
+	{
+		path: '/comment-condition',
+		name: 'comment-condition',
+		component: () => import('../../views/comment-condition'),
+	},
 ]

@@ -16,7 +16,7 @@
                 </el-image>
                 <div class="p_m_i_top_right">
                   <h2>{{processDetails.Name}}</h2>
-                  <h5><a :href="`http://localhost:8080/check-page?url=${this.processDetails.Url}`" target="_blank">{{processDetails.Url}}</a>  •  {{commentPage.pageNum?commentPage.pageNum:0}} Complaints</h5>
+                  <h5><a :href="`${pageUrl}/check-page?url=${this.processDetails.Url}`" target="_blank">{{processDetails.Url}}</a>  •  {{commentPage.pageNum?commentPage.pageNum:0}} Complaints</h5>
               </div>
               </div>
               <div class="p_m_i_bottom">
@@ -210,6 +210,8 @@
                 </div>
                 <el-tabs class="tag_tab" v-model="tabsActiveName" @tab-click="handleTabsClick">
                   <el-tab-pane label="Complaint" name="1"></el-tab-pane>
+                  <el-tab-pane label="Replied" name="2"></el-tab-pane>
+                  <el-tab-pane label="Solved" name="3"></el-tab-pane>
                 </el-tabs>
               </div>
               <div v-if="productComment && productComment.length>0">
@@ -221,7 +223,7 @@
                     </div>
                     <span class="date">{{item.Time?dateEnglish(item.Time):'--:--'}}</span>
                   </div>
-                   <p class="casr_title">{{item.Title}}</p>
+                   <p class="casr_title" @click="$router.push('/comment-condition')">{{item.Title}}</p>
                   <p class="card_text" v-html="item.Content"></p>
                   <div class="review_tag_list">
                     <el-tag size="small" v-for="(tag,index) in item.LabelName" :key="index">{{tag.Name}}</el-tag>
@@ -234,7 +236,7 @@
                       <span>({{item.Fabulous}})</span>
                     </div>
                   </div>
-                  <!-- <div class="reply">
+                  <div class="reply">
                     <svg-icon value="icon-icon_reply"></svg-icon>
                     <div class="reply_right">
                       <div class="reply_right_user">
@@ -245,7 +247,7 @@
                         Thank you for your review, Diane. We are so happy to hear you have had a great experience . Thank you for choosing PPG!
                       </div>
                     </div>
-                  </div> -->
+                  </div>
                 </div>
                 <div class="left_page" v-if="commentPage.pageNum>1">
                   <el-pagination
@@ -301,7 +303,10 @@ export default {
   computed:{
     url(){
       return process.env.VUE_APP_BASE_URL;
-    }
+    },
+    pageUrl(){
+      return process.env.VUE_APP_PAGE_URL;
+    },
   },
   created(){
     this.pid=this.$route.query.pid;
@@ -362,7 +367,7 @@ export default {
      * 相关产品
      */
     handleTypeProductCommand(com){
-      window.open("http://localhost:8080/product-info?pid="+com);
+      window.open(`${this.pageUrl}/product-info?pid=${com}`);
     },
     /**
      * 评论分数进入写评论
@@ -380,7 +385,7 @@ export default {
      * 跳转产品页
      */
     handleHomePage(url){
-      window.open("http://localhost:8080/check-page?url="+this.processDetails.Url);
+      window.open(`${this.pageUrl}/check-page?url=${this.processDetails.Url}`);
     },
     /**
      * 产品详情数据初始化
