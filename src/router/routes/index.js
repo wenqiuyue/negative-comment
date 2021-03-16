@@ -1,7 +1,31 @@
 export default [
-	//首页
+  //登录
   {
 		path: '/',
+		name: 'login',
+		component: () => import('../../views/login/login.vue'),
+  },
+    //注册
+  {
+		path: '/register',
+		name: 'register',
+		component: () => import('../../views/register'),
+  },
+  //忘记密码
+  {
+		path: '/forget-password',
+		name: 'forget-password',
+		component: () => import('../../views/forget-password'),
+	},
+  //重置密码
+  {
+		path: '/password-reset',
+		name: 'password-reset',
+		component: () => import('../../views/password-reset'),
+	},
+	//首页
+  {
+		path: '/home',
 		name: 'home',
 		component: () => import('../../views/home/home.vue'),
 	},

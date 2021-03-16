@@ -2,7 +2,7 @@
   <div class="footer">
     <h4 class="b_share">SHARE PAGE</h4>
     <share :url="$route.fullPath"></share>
-    <div class="b_hre">©{{year}}<a href="/">comment.com</a></div>
+    <div class="b_hre">©{{year}}<a href="/home">comment.com</a></div>
   </div>
 </template>
 <script>

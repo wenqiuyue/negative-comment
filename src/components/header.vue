@@ -16,7 +16,26 @@
       </div>
       <div class="header_button">
         <span class="categories" @click="goCategories">Categories</span>
+        <span class="categories" @click="goLogin">Login</span>
         <el-button class="companies" type="gone" plain>For companies</el-button>
+        <el-dropdown trigger="click" @command="handleUserCommand">
+            <span class="el-dropdown-link">
+              <el-avatar
+                size="large"
+                :src="require('../assets/images/user-admin.png')"
+              ></el-avatar>
+              <i class="el-icon-caret-bottom el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item disabled>
+                <div>wqy</div>
+                <div>11@qq.com</div>
+              </el-dropdown-item>
+              <!-- <el-dropdown-item divided command="1">Set Up</el-dropdown-item> -->
+              <el-dropdown-item command="2">Change Password</el-dropdown-item>
+              <el-dropdown-item divided command="6">Log out</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
       </div>
     </div>
     <div class="phone_header">
@@ -36,9 +55,11 @@
           <i class="p_h_icon el-icon-menu"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="1">Categories</el-dropdown-item>
+            <el-dropdown-item command="3">Login</el-dropdown-item>
             <el-dropdown-item command="2">For companies</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
+        <span class="user">wqy</span>
       </div>
       <el-input
         v-else
@@ -74,6 +95,23 @@ export default {
   },
   methods:{
     /**
+     * 头部下拉菜单
+     */
+    handleUserCommand(com) {
+      if (com == 6) {
+        this.$router.replace({
+          path: "/",
+        });
+      }else if(com == 2){
+        this.$router.replace({
+          path: "/password-reset",
+          query:{
+            // email:this.user.workEmail
+          }
+        });
+      } 
+    },
+    /**
      * 搜索
      */
     handleSearch(){
@@ -89,6 +127,12 @@ export default {
       this.$emit('freshData',1,this.searchData);
     },
     /**
+     * 去往登录页
+     */
+    goLogin(){
+      this.$router.push({ path: '/'});
+    },
+    /**
      * 去往分类页面
      */
     goCategories(){
@@ -98,7 +142,7 @@ export default {
      * 去往首页
      */
     goHome(){
-      this.$router.push({ path: '/'});
+      this.$router.push({ path: '/home'});
     },
     /**
      * 手机模式下拉菜单触发
@@ -106,6 +150,8 @@ export default {
     handleCommand(command){
       if(command==1){
         this.goCategories();
+      }else if(command==3){
+        this.goLogin();
       }
     }
   }
@@ -145,11 +191,14 @@ export default {
       }
     }
     .header_button{
+      display: flex;
+      align-items: center;
       .categories{
         cursor: pointer;
+        margin-right: 22px;
       }
       .companies{
-        margin-left: 2rem;
+        margin-left: 0.3rem;
         border: 2px solid #ffffff;
         font-weight: bold;
         display: initial;    
@@ -163,6 +212,14 @@ export default {
       .el-button--gone{
         background: @main-color;
         color:#ffffff;
+      }
+      .el-dropdown{
+        margin-left: 26px;
+      }
+      .el-dropdown-link {
+        &:hover {
+          cursor: pointer;
+        }
       }
     }
   }
@@ -186,10 +243,15 @@ export default {
       }
     }
     .p_icon{
+      display: flex;
+      align-items: center;
       .p_h_icon{
         font-size: 1.3rem;
         margin-left: 1rem;
         color: #ffffff;
+      }
+      .user{
+        margin-left: 1rem;
       }
     }
   }
