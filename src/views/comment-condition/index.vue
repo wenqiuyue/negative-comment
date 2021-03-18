@@ -25,38 +25,88 @@
                   <div><i class="el-icon-edit"></i> 1 review</div>
                 </div>
               </div>
-              <el-divider></el-divider>
+              <el-divider class="divider"></el-divider>
               <div class="time">4 days ago</div>
               <h2 class="title">Me and my wife started this bout a month ago and we've defo got the bug now love love</h2>
               <p class="content">I have just signed up to FIIT and the Total Burn training plan, I absolutely love it. I can not recommend this app enough! The instructors are great and I always feel like I’ve had a good workout by the end of every session. I find the training programme really motivating and like that the classes are released each week so it’s not just a long list of ones to complete. I’ve been trying some of the breathing classes lately and I’ve been sleeping much better! So happy I signed up to this!</p>
               <div class="tag_group">
                 <el-tag size="small" v-for="(tag,index) in 4" :key="index">poor</el-tag>
               </div>
-              <el-divider></el-divider>
-              <div class="card_bottom">
-                <div class="item">
-                  <el-tooltip class="item" effect="dark" content="Useful" placement="top-start">
-                    <svg-icon value="icon-xihuan1" :size="1.2" style="color:#aaa"></svg-icon>
-                  </el-tooltip>
-                  <span>(0)</span>
-                </div>
-              </div>
-              <div class="reply">
-                <svg-icon value="icon-icon_reply"></svg-icon>
-                <div class="reply_right">
-                  <div class="reply_right_user">
-                    <span>Reply from Paw Print Genetics</span>
-                    <span class="date">12月20日</span>
+              <div class="score_date">
+                    <div class="s_d_com">
+                      <span>comment(3)</span>
+                      <i class="el-icon-caret-bottom"></i>
+                    </div>
+                    <el-divider direction="vertical"></el-divider>
+                    <div class="card_bottom">
+                      <el-tooltip class="item" effect="dark" content="Useful" placement="top-start">
+                        <svg-icon value="icon-xihuan1" :size="1.1" style="color:#aaa"></svg-icon>
+                      </el-tooltip>
+                      <span>(2)</span>
+                    </div>
+                    <el-divider direction="vertical"></el-divider>
+                    <div class="card_bottom">
+                      <el-tooltip class="item" effect="dark" content="Report" placement="top-start">
+                        <svg-icon value="icon-jubao" :size="1.1" style="color:#aaa"></svg-icon>
+                      </el-tooltip>
+                    </div>
+                    <el-divider direction="vertical"></el-divider>
+                    <div class="card_bottom">
+                      <el-tooltip class="item" effect="dark" content="Delete" placement="top-start">
+                        <svg-icon value="icon-shanchu1" :size="1.1" style="color:#aaa"></svg-icon>
+                      </el-tooltip>
+                    </div>
                   </div>
-                  <div class="reply_right_text">
-                    Thank you for your review, Diane. We are so happy to hear you have had a great experience . Thank you for choosing PPG!
-                  </div>
-                </div>
-              </div>
+                  <template v-if="true">
+                    <div class="comment">
+                      <el-input
+                        type="textarea"
+                        :rows="3"
+                        placeholder="Please input"
+                        v-model="commentText">
+                      </el-input>
+                      <div class="c_btn_group">
+                        <el-button type="info" plain size="mini">Cancel</el-button>
+                        <el-button size="mini">Post Comment</el-button>
+                      </div>
+                    </div>
+                    <div class="reply">
+                      <svg-icon value="icon-icon_reply"></svg-icon>
+                      <div class="reply_right">
+                        <div class="reply_right_user">
+                          <span>Reply from Paw Print Genetics</span>
+                          <span class="date">2021年12月</span>
+                        </div>
+                        <div class="reply_right_text">
+                          Thank you for your review, Diane. We are so happy to hear you have had a great experience . Thank you for choosing PPG!
+                        </div>
+                      </div>
+                    </div>
+                    <div class="reply" v-for="(item,index) in 4" :key="index">
+                      <div class="reply_right">
+                        <div class="reply_right_user">
+                          <div class="user_info">
+                            <el-avatar size="large" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"></el-avatar>
+                            <span>Courtney M.</span>
+                          </div>
+                          <span class="date">2021年12月</span>
+                        </div>
+                        <div class="reply_right_text">
+                          Thank you for your review, Diane. We are so happy to hear you have had a great experience . Thank you for choosing PPG!
+                        </div>
+                      </div>
+                    </div>
+                  </template>
             </div>
           </div>
         </div>
-        <el-button type="primary" plain class="solved_btn">Solved</el-button>
+        <div>
+          <el-button type="primary" plain class="solved_btn">Solved</el-button>
+          <div class="solved_tips">
+            <i class="el-icon-info"></i>
+            <span>If the company's reply has solved your problem, please click the "solved" button.</span>
+          </div>
+        </div>
       </div>
       <footer-com></footer-com>
     </div>
@@ -64,7 +114,11 @@
 </template>
 <script>
 export default {
-  
+  data(){
+    return{
+      commentText:null
+    }
+  }
 }
 </script>
 <style lang="less" scoped>
@@ -141,7 +195,7 @@ export default {
                 }
               }
             }
-            .el-divider{
+            .divider{
               margin: 12px 0;
             }
             .time{
@@ -167,8 +221,26 @@ export default {
             }
             .tag_group{
               margin-top: 8px;
+              padding-bottom: 5px;
               .el-tag{
                 margin-right: 5px;
+              }
+            }
+            .score_date{
+              border-top: 1px solid #e8e8eb;
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              padding-top: 12px;
+              .s_d_com{
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                cursor: pointer;
+                span{
+                  color: #6d728b;
+                  font-size: 14px;
+                }
               }
             }
             .card_bottom{
@@ -186,6 +258,17 @@ export default {
                   margin-left: 5px;
                   color: #666666;
                   user-select: none;
+                }
+              }
+            }
+            .comment{
+              margin-top: 14px;
+              .c_btn_group{
+                margin-top: 10px;
+                button:nth-child(2){
+                  background: #02C48D;
+                  color: #ffffff;
+                  border-color: #02C48D;
                 }
               }
             }
@@ -213,6 +296,16 @@ export default {
                     font-size: 14px;
                     color:#73738f;
                   }
+                  .user_info{
+                    display: flex;
+                    align-items: center;
+                    span:last-child{
+                      font-size: 14px;
+                      color: #454554;
+                      margin-left: 5px;
+                      font-weight: bolder;
+                    }
+                  }
                 }
                 .reply_right_text{
                   margin-top: 12px;
@@ -229,7 +322,83 @@ export default {
         width: 100%;
         margin-top: 14px;
       }
+      .solved_tips{
+        font-size: 12px;
+        margin-top: 8px;
+        color: #E14242;
+        span{
+          margin-left: 5px;
+        }
+      }
     }
   }
 }
+  @media all and (max-width: 1024px) {
+    .comment-condition{
+      .comment-condition_main{
+        .main_head{
+          padding: 20px 12px;
+          background: #ffffff;
+          .m_h_content{
+            .el-avatar{
+              width: 66px;
+              height: 66px;
+            }
+            .m_h_c_user{
+              margin-left: 34px;
+            }
+          }
+        }
+        .comment_list{
+          width: 96%;
+          margin: 0 auto;
+          padding: 28px 0 26px 0;
+          .c_l_main{
+            .c_l_m_card{
+              .card_comment{
+                padding: 16px 12px;
+                .reply{
+                 margin-top: 6px;
+                 padding:14px 8px;
+                  .reply_right{
+                    .reply_right_user{
+                      span:first-child{
+                        font-size: 13px;
+                      }
+                      span:last-child{
+                        font-size: 12px;
+                      }
+                      .user_info{
+                        span:last-child{
+                          font-size: 13px;
+                        }
+                      }
+                    }
+                    .reply_right_text{
+                      margin-top: 12px;
+                      color: #515174;
+                      font-size: 14px;
+                      word-break: break-all;
+                    }
+                  }
+                }
+              }
+            }
+          }
+          .solved_btn{
+            width: 100%;
+            margin-top: 14px;
+          }
+          .solved_tips{
+            font-size: 12px;
+            margin-top: 8px;
+            color: #E14242;
+            span{
+              margin-left: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
 </style>

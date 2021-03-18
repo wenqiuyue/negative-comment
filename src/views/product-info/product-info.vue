@@ -107,6 +107,18 @@
                 </div>
               </div>
             </div>
+            <div class="right_Informations">
+              <h3>{{true?'Is this your company?':'Your company'}}</h3>
+              <div class="r_r_Informations r_r_company">
+                <div class="c_row">
+                  <div class="card_left_introduce" v-if="true">Claim your company profile to access {{processDetails.Name}}.com's free business tools and start getting colser toyour customers today!</div>
+                  <div class="card_left_introduce" v-else>Claimed their {{processDetails.Name}} profile: August 2021</div>
+                </div>
+                <div class="com_btn" v-if="true">
+                  <el-button type="success">Claim your free business account</el-button>
+                </div>
+              </div>
+            </div>
             <div class="right_img" v-if="processDetails.Images && processDetails.Images.length>0">
               <h3>{{processDetails.Images.length}} Images</h3>
               <div class="r_r_img">
@@ -223,31 +235,76 @@
                     </div>
                     <span class="date">{{item.Time?dateEnglish(item.Time):'--:--'}}</span>
                   </div>
-                   <p class="casr_title" @click="$router.push('/comment-condition')">{{item.Title}}</p>
-                  <p class="card_text" v-html="item.Content"></p>
+                   <p class="casr_title"  @click="$router.push('/comment-condition')">{{item.Title}}</p>
+                  <p class="card_text"  @click="$router.push('/comment-condition')" v-html="item.Content"></p>
                   <div class="review_tag_list">
                     <el-tag size="small" v-for="(tag,index) in item.LabelName" :key="index">{{tag.Name}}</el-tag>
                   </div>
                   <div class="score_date">
+                    <div class="s_d_com" @click="item.isOpenCom=!item.isOpenCom">
+                      <span>comment(3)</span>
+                      <i class="el-icon-caret-bottom"></i>
+                    </div>
+                    <el-divider direction="vertical"></el-divider>
                     <div class="card_bottom">
                       <el-tooltip class="item" effect="dark" content="Useful" placement="top-start">
-                        <svg-icon value="icon-xihuan1" :size="1.3" :style="likeReviewList.indexOf(`${processDetails.Id}-${item.Id}`)==-1?'color:#aaa':'color:#f56c6c'" @click="handleUseFul(item,index)" v-preventReClick></svg-icon>
+                        <svg-icon value="icon-xihuan1" :size="1.1" :style="likeReviewList.indexOf(`${processDetails.Id}-${item.Id}`)==-1?'color:#aaa':'color:#f56c6c'" @click="handleUseFul(item,index)" v-preventReClick></svg-icon>
                       </el-tooltip>
                       <span>({{item.Fabulous}})</span>
                     </div>
-                  </div>
-                  <div class="reply">
-                    <svg-icon value="icon-icon_reply"></svg-icon>
-                    <div class="reply_right">
-                      <div class="reply_right_user">
-                        <span>Reply from Paw Print Genetics</span>
-                        <span class="date">{{item.Time?dateEnglish(item.Time):'--:--'}}</span>
-                      </div>
-                      <div class="reply_right_text">
-                        Thank you for your review, Diane. We are so happy to hear you have had a great experience . Thank you for choosing PPG!
-                      </div>
+                    <el-divider direction="vertical"></el-divider>
+                    <div class="card_bottom">
+                      <el-tooltip class="item" effect="dark" content="Report" placement="top-start">
+                        <svg-icon value="icon-jubao" :size="1.1" :style="likeReviewList.indexOf(`${processDetails.Id}-${item.Id}`)==-1?'color:#aaa':'color:#f56c6c'"></svg-icon>
+                      </el-tooltip>
+                    </div>
+                    <el-divider direction="vertical"></el-divider>
+                    <div class="card_bottom">
+                      <el-tooltip class="item" effect="dark" content="Delete" placement="top-start">
+                        <svg-icon value="icon-shanchu1" :size="1.1" style="color:#aaa"></svg-icon>
+                      </el-tooltip>
                     </div>
                   </div>
+                  <template v-if="item.isOpenCom">
+                    <div class="comment">
+                      <el-input
+                        type="textarea"
+                        :rows="3"
+                        placeholder="Please input"
+                        v-model="item.commentText">
+                      </el-input>
+                      <div class="c_btn_group">
+                        <el-button type="info" plain size="mini">Cancel</el-button>
+                        <el-button size="mini">Post Comment</el-button>
+                      </div>
+                    </div>
+                    <div class="reply">
+                      <svg-icon value="icon-icon_reply"></svg-icon>
+                      <div class="reply_right">
+                        <div class="reply_right_user">
+                          <span>Reply from Paw Print Genetics</span>
+                          <span class="date">{{item.Time?dateEnglish(item.Time):'--:--'}}</span>
+                        </div>
+                        <div class="reply_right_text">
+                          Thank you for your review, Diane. We are so happy to hear you have had a great experience . Thank you for choosing PPG!
+                        </div>
+                      </div>
+                    </div>
+                    <div class="reply" v-for="(item,index) in 4" :key="index">
+                      <div class="reply_right">
+                        <div class="reply_right_user">
+                          <div class="user_info">
+                            <el-avatar size="large" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"></el-avatar>
+                            <span>Courtney M.</span>
+                          </div>
+                          <span class="date">{{item.Time?dateEnglish(item.Time):'--:--'}}</span>
+                        </div>
+                        <div class="reply_right_text">
+                          Thank you for your review, Diane. We are so happy to hear you have had a great experience . Thank you for choosing PPG!
+                        </div>
+                      </div>
+                    </div>
+                  </template>
                 </div>
                 <div class="left_page" v-if="commentPage.pageNum>1">
                   <el-pagination
@@ -407,6 +464,10 @@ export default {
           this.processDetails=resp[0].data;    
         }
         if(resp[1].res==200){
+          resp[1].data.Item1.forEach((m,index)=>{
+            m.isOpenCom=false;
+            m.commentText=null;
+          })
           this.productComment=resp[1].data.Item1;
           this.commentPage.pageNum=resp[1].data.Item2;
         }
@@ -448,7 +509,11 @@ export default {
       this.loading=true;
       this.$apiHttp.negativeNCommentList(data).then((resp)=>{
         if(resp.res==200){
-          this.productComment=resp.data.Item1;;
+          resp.data.Item1.forEach((m,index)=>{
+            m.isOpenCom=false;
+            m.commentText=null;
+          })
+          this.productComment=resp.data.Item1;
           this.commentPage.pageNum=resp.data.Item2;
         }
         this.loading=false;
@@ -926,9 +991,29 @@ export default {
           border-top: 1px solid #e8e8eb;
           display: flex;
           flex-direction: row;
-          justify-content: space-between;
           align-items: center;
-          padding-top: 8px;
+          padding-top: 12px;
+          .s_d_com{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            cursor: pointer;
+            span{
+              color: #6d728b;
+              font-size: 14px;
+            }
+          }
+        }
+        .comment{
+          margin-top: 14px;
+          .c_btn_group{
+            margin-top: 10px;
+            button:nth-child(2){
+              background: #02C48D;
+              color: #ffffff;
+              border-color: #02C48D;
+            }
+          }
         }
         .reply{
           margin-top: 18px;
@@ -953,6 +1038,16 @@ export default {
               span:last-child{
                 font-size: 14px;
                 color:#73738f;
+              }
+              .user_info{
+                display: flex;
+                align-items: center;
+                span:last-child{
+                  font-size: 14px;
+                  color: #454554;
+                  margin-left: 5px;
+                  font-weight: bolder;
+                }
               }
             }
             .reply_right_text{
@@ -985,14 +1080,14 @@ export default {
         .card_bottom{
           display: flex;
           align-items: center;
-          padding-top: 8px;
           svg{
             cursor: pointer;
           }
           span{
             margin-left: 5px;
-            color: #666666;
+            color: #6d728b;
             user-select: none;
+            font-size: 14px;
           }
         }
       }
@@ -1278,6 +1373,19 @@ export default {
             }
           }
         }
+        .r_r_company{
+          padding-bottom: 14px;
+          .c_row{
+            margin-bottom: 0;
+          }
+          .com_btn{
+            text-align: center;
+            .el-button{
+              width: 80%;
+              background: #02C48D;
+            }
+          }
+        }
       }
       .right_discount{
         margin-bottom: 12px;
@@ -1443,6 +1551,11 @@ export default {
             margin-left: 12px;
             margin-right: 20px;
           }
+          .write_three{
+            .t_title{
+              font-size: 20px;
+            }
+          }
         }
         .left_main_review{
           .review_tag{
@@ -1477,23 +1590,28 @@ export default {
             padding-bottom: 12px;
           }
           .reply{
-            padding:10px;
-            .reply_right{
-              margin-left: 6px;
-              .reply_right_user{
-                span:first-child{
+          margin-top: 6px;
+          padding:14px 8px;
+          .reply_right{
+            .reply_right_user{
+              span:first-child{
+                font-size: 13px;
+              }
+              span:last-child{
+                font-size: 12px;
+              }
+              .user_info{
+                span:last-child{
                   font-size: 13px;
                 }
-                span:last-child{
-                  font-size: 12px;
-                  color:#73738f;
-                }
-              }
-              .reply_right_text{
-                margin-top: 10px;
               }
             }
+            .reply_right_text{
+              margin-top: 10px;
+              font-size: 13px;
+            }
           }
+        }
           .card_text{      
             line-height: 1.4rem;
             font-size: 14px;
@@ -1514,6 +1632,9 @@ export default {
                 }
               }
             }
+          }
+          .r_r_company{
+            padding-bottom: 14px;
           }
         }
         .right_discount{

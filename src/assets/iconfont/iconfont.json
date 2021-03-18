@@ -578,6 +578,20 @@
       "font_class": "cai",
       "unicode": "e6ba",
       "unicode_decimal": 59066
+    },
+    {
+      "icon_id": "74397508",
+      "name": "举报",
+      "font_class": "jubao",
+      "unicode": "e654",
+      "unicode_decimal": 58964
+    },
+    {
+      "icon_id": "74398815",
+      "name": "删除",
+      "font_class": "shanchu1",
+      "unicode": "e605",
+      "unicode_decimal": 58885
     }
   ]
 }
