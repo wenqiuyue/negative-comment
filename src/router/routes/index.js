@@ -71,4 +71,10 @@ export default [
 		name: 'comment-condition',
 		component: () => import('../../views/comment-condition'),
 	},
+  //findreviewer 用户信息提交页面
+	{
+		path: '/find-information',
+		name: 'find-information',
+		component: () => import('../../views/find-information'),
+	},
 ]
